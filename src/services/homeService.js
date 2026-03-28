@@ -3,7 +3,7 @@ import api from './api'
 const homeService = {
   async getCarouselImages() {
     const response = await api.get('/home/images')
-    return response.data
+    return response.data?.data || []
   },
 
   async getPDFs() {

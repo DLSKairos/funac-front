@@ -20,8 +20,8 @@ const adminService = {
 
   // Carousel
   async getCarouselImages() {
-    const response = await api.get('/home/images')
-    return response.data
+    const response = await api.get('/admin/carousel/images')
+    return response.data?.data || []
   },
 
   async uploadCarouselImages(formData) {

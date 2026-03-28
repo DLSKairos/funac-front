@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Heart, Users } from 'lucide-react'
 import Button from '../ui/Button'
+import ImageCarousel from './ImageCarousel'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -46,8 +47,12 @@ export default function Hero() {
           para nuestra comunidad
         </motion.h1>
 
+        <motion.div custom={0.3} initial="hidden" animate="visible" variants={fadeUp}>
+          <ImageCarousel />
+        </motion.div>
+
         <motion.p
-          custom={0.3}
+          custom={0.45}
           initial="hidden"
           animate="visible"
           variants={fadeUp}
@@ -57,7 +62,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.div
-          custom={0.45}
+          custom={0.6}
           initial="hidden"
           animate="visible"
           variants={fadeUp}
@@ -77,7 +82,7 @@ export default function Hero() {
 
         {/* Stats row */}
         <motion.div
-          custom={0.6}
+          custom={0.75}
           initial="hidden"
           animate="visible"
           variants={fadeUp}

@@ -309,7 +309,7 @@ function CarouselTab() {
 
   const load = () => {
     adminService.getCarouselImages()
-      .then((d) => setImages(Array.isArray(d) ? d : (d?.imagenes || [])))
+      .then((d) => setImages(Array.isArray(d) ? d : []))
       .catch(() => toast.error('Error al cargar imagenes'))
       .finally(() => setLoading(false))
   }
@@ -326,7 +326,7 @@ function CarouselTab() {
     if (!files.length) return
     setUploading(true)
     const formData = new FormData()
-    files.forEach((f) => formData.append('imagenes', f))
+    files.forEach((f) => formData.append('images', f))
     try {
       await adminService.uploadCarouselImages(formData)
       toast.success('Imagenes subidas correctamente')
@@ -401,7 +401,7 @@ function CarouselTab() {
           {images.map((img) => (
             <div key={img.id} className="relative group rounded-xl overflow-hidden border border-gray-100">
               <img
-                src={img.url || img.imagen_url}
+                src={img.url_imagen || img.url}
                 alt={img.titulo || 'Imagen carrusel'}
                 className="w-full aspect-video object-cover"
               />
