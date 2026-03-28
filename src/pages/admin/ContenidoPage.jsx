@@ -6,6 +6,7 @@ import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import Textarea from '../../components/ui/Textarea'
 import Spinner from '../../components/ui/Spinner'
+import IconPicker from '../../components/ui/IconPicker'
 import { formatFileSize } from '../../utils/formatters'
 
 const TABS = ['Paginas', 'Carrusel', 'PDFs', 'Redes Sociales', 'WhatsApp']
@@ -31,8 +32,8 @@ function PaginasTab() {
           const m = rows.find((r) => r.seccion === 'mision')
           const v = rows.find((r) => r.seccion === 'vision')
           setSecciones([
-            { seccion: 'mision',  contenido: m?.contenido || '', orden: 0, activo: true },
-            { seccion: 'vision',  contenido: v?.contenido || '', orden: 1, activo: true },
+            { seccion: 'mision',  contenido: m?.contenido || '', orden: 0, activo: true, icono: m?.icono || null },
+            { seccion: 'vision',  contenido: v?.contenido || '', orden: 1, activo: true, icono: v?.icono || null },
           ])
         } else if (pagina === 'quienes_somos') {
           const get = (key) => rows.find((r) => r.seccion === key)
@@ -40,17 +41,17 @@ function PaginasTab() {
             .filter((r) => r.seccion.startsWith('objetivo_') && r.seccion !== 'objetivo_social')
             .sort((a, b) => a.orden - b.orden)
           setSecciones([
-            { seccion: 'quienes_somos',   contenido: get('quienes_somos')?.contenido   || '', orden: 0, activo: true },
-            { seccion: 'objetivo_social', contenido: get('objetivo_social')?.contenido || '', orden: 1, activo: true },
+            { seccion: 'quienes_somos',   contenido: get('quienes_somos')?.contenido   || '', orden: 0, activo: true, icono: get('quienes_somos')?.icono   || null },
+            { seccion: 'objetivo_social', contenido: get('objetivo_social')?.contenido || '', orden: 1, activo: true, icono: get('objetivo_social')?.icono || null },
             ...(objs.length > 0
               ? objs.map((o, i) => ({ ...o, orden: i + 2 }))
               : [{ seccion: 'objetivo_1', contenido: '', orden: 2, activo: true }]
             ),
           ])
         } else if (!rows?.length) {
-          setSecciones([{ seccion: 'seccion_1', contenido: '', orden: 0, activo: true }])
+          setSecciones([{ seccion: 'seccion_1', contenido: '', orden: 0, activo: true, icono: null }])
         } else {
-          setSecciones(rows.map((r) => ({ ...r })))
+          setSecciones(rows.map((r) => ({ ...r, icono: r.icono || null })))
         }
       })
       .catch(() => toast.error('Error al cargar contenido'))
@@ -115,7 +116,13 @@ function PaginasTab() {
         /* ── Formulario estructurado para Quiénes Somos ── */
         <div className="space-y-6 max-w-2xl">
           <div>
-            <p className="text-sm font-semibold text-gray-700 mb-1">Quienes Somos</p>
+            <div className="flex items-center gap-3 mb-1">
+              <p className="text-sm font-semibold text-gray-700">Quienes Somos</p>
+              <IconPicker
+                value={secciones.find((s) => s.seccion === 'quienes_somos')?.icono || null}
+                onChange={(icon) => handleChange(secciones.findIndex((s) => s.seccion === 'quienes_somos'), 'icono', icon)}
+              />
+            </div>
             <Textarea
               rows={5}
               value={secciones.find((s) => s.seccion === 'quienes_somos')?.contenido || ''}
@@ -124,7 +131,13 @@ function PaginasTab() {
             />
           </div>
           <div>
-            <p className="text-sm font-semibold text-gray-700 mb-1">Objetivo Social</p>
+            <div className="flex items-center gap-3 mb-1">
+              <p className="text-sm font-semibold text-gray-700">Objetivo Social</p>
+              <IconPicker
+                value={secciones.find((s) => s.seccion === 'objetivo_social')?.icono || null}
+                onChange={(icon) => handleChange(secciones.findIndex((s) => s.seccion === 'objetivo_social'), 'icono', icon)}
+              />
+            </div>
             <Textarea
               rows={4}
               value={secciones.find((s) => s.seccion === 'objetivo_social')?.contenido || ''}
@@ -196,20 +209,36 @@ function PaginasTab() {
       ) : selectedPage === 'mision_vision' ? (
         /* ── Formulario simplificado solo para Misión / Visión ── */
         <div className="space-y-6 max-w-2xl">
-          <Textarea
-            label="Mision"
-            rows={5}
-            value={secciones.find((s) => s.seccion === 'mision')?.contenido || ''}
-            onChange={(e) => handleChange(secciones.findIndex((s) => s.seccion === 'mision'), 'contenido', e.target.value)}
-            placeholder="Describe la mision de FUNAC..."
-          />
-          <Textarea
-            label="Vision"
-            rows={5}
-            value={secciones.find((s) => s.seccion === 'vision')?.contenido || ''}
-            onChange={(e) => handleChange(secciones.findIndex((s) => s.seccion === 'vision'), 'contenido', e.target.value)}
-            placeholder="Describe la vision de FUNAC..."
-          />
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <p className="text-sm font-semibold text-gray-700">Mision</p>
+              <IconPicker
+                value={secciones.find((s) => s.seccion === 'mision')?.icono || null}
+                onChange={(icon) => handleChange(secciones.findIndex((s) => s.seccion === 'mision'), 'icono', icon)}
+              />
+            </div>
+            <Textarea
+              rows={5}
+              value={secciones.find((s) => s.seccion === 'mision')?.contenido || ''}
+              onChange={(e) => handleChange(secciones.findIndex((s) => s.seccion === 'mision'), 'contenido', e.target.value)}
+              placeholder="Describe la mision de FUNAC..."
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-3 mb-1">
+              <p className="text-sm font-semibold text-gray-700">Vision</p>
+              <IconPicker
+                value={secciones.find((s) => s.seccion === 'vision')?.icono || null}
+                onChange={(icon) => handleChange(secciones.findIndex((s) => s.seccion === 'vision'), 'icono', icon)}
+              />
+            </div>
+            <Textarea
+              rows={5}
+              value={secciones.find((s) => s.seccion === 'vision')?.contenido || ''}
+              onChange={(e) => handleChange(secciones.findIndex((s) => s.seccion === 'vision'), 'contenido', e.target.value)}
+              placeholder="Describe la vision de FUNAC..."
+            />
+          </div>
         </div>
       ) : (
         /* ── Editor generico para Quienes Somos y Valores ── */
@@ -223,6 +252,12 @@ function PaginasTab() {
                     value={sec.seccion}
                     onChange={(e) => handleChange(idx, 'seccion', e.target.value)}
                     placeholder="ej: Historia, Nuestro Equipo, Compromiso..."
+                  />
+                </div>
+                <div className="mt-5 shrink-0">
+                  <IconPicker
+                    value={sec.icono || null}
+                    onChange={(icon) => handleChange(idx, 'icono', icon)}
                   />
                 </div>
                 <label className="flex items-center gap-1.5 mt-5 shrink-0 cursor-pointer">

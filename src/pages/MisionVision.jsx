@@ -1,8 +1,33 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Target, Eye } from 'lucide-react'
+import {
+  Heart, Shield, Star, Users, Target, Eye, Lightbulb, Leaf,
+  CheckCircle, Award, Globe, Home, Book, Briefcase, Building,
+  Camera, Clock, Cloud, Code, Coffee, Compass, Database,
+  Flag, Gift, HeartHandshake, Headphones, Info, Key,
+  Layers, Link, Lock, Mail, Map, MessageCircle, Music,
+  Phone, PieChart, Rocket, Search, Settings, Share2, Smile,
+  Sun, ThumbsUp, TreePine, TrendingUp, Trophy, Truck,
+  Umbrella, Zap, ArrowRight, Bell, Calendar, Cpu, Download,
+} from 'lucide-react'
 import adminService from '../services/adminService'
 import Alert from '../components/ui/Alert'
+
+const ICON_MAP = {
+  Heart, Shield, Star, Users, Target, Eye, Lightbulb, Leaf,
+  CheckCircle, Award, Globe, Home, Book, Briefcase, Building,
+  Camera, Clock, Cloud, Code, Coffee, Compass, Database,
+  Flag, Gift, HeartHandshake, Headphones, Info, Key,
+  Layers, Link, Lock, Mail, Map, MessageCircle, Music,
+  Phone, PieChart, Rocket, Search, Settings, Share2, Smile,
+  Sun, ThumbsUp, TreePine, TrendingUp, Trophy, Truck,
+  Umbrella, Zap, ArrowRight, Bell, Calendar, Cpu, Download,
+}
+
+function DynamicIcon({ name, size, DefaultIcon }) {
+  const Icon = (name && ICON_MAP[name]) ? ICON_MAP[name] : DefaultIcon
+  return <Icon size={size} />
+}
 
 function PageSkeleton() {
   return (
@@ -27,6 +52,9 @@ export default function MisionVision() {
       .catch(() => setError('No se pudo cargar el contenido. Intenta nuevamente.'))
       .finally(() => setLoading(false))
   }, [])
+
+  const misionIcono = page?.secciones?.find((s) => s.seccion === 'mision')?.icono || null
+  const visionIcono = page?.secciones?.find((s) => s.seccion === 'vision')?.icono || null
 
   return (
     <div className="min-h-screen pt-20">
@@ -63,7 +91,7 @@ export default function MisionVision() {
               className="bg-gradient-to-br from-funac-navy to-blue-800 rounded-2xl p-8 text-white"
             >
               <div className="inline-flex p-3 bg-white/20 rounded-xl mb-6">
-                <Target size={28} />
+                <DynamicIcon name={misionIcono} size={28} DefaultIcon={Target} />
               </div>
               <h2 className="text-2xl font-black mb-4">Nuestra Mision</h2>
               <p className="text-blue-100 leading-relaxed">
@@ -78,7 +106,7 @@ export default function MisionVision() {
               className="bg-gradient-to-br from-funac-orange to-orange-600 rounded-2xl p-8 text-white"
             >
               <div className="inline-flex p-3 bg-white/20 rounded-xl mb-6">
-                <Eye size={28} />
+                <DynamicIcon name={visionIcono} size={28} DefaultIcon={Eye} />
               </div>
               <h2 className="text-2xl font-black mb-4">Nuestra Vision</h2>
               <p className="text-orange-100 leading-relaxed">

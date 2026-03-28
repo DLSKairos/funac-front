@@ -1,8 +1,33 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Users, Target, CheckCircle } from 'lucide-react'
+import {
+  Heart, Shield, Star, Users, Target, Eye, Lightbulb, Leaf,
+  CheckCircle, Award, Globe, Home, Book, Briefcase, Building,
+  Camera, Clock, Cloud, Code, Coffee, Compass, Database,
+  Flag, Gift, HeartHandshake, Headphones, Info, Key,
+  Layers, Link, Lock, Mail, Map, MessageCircle, Music,
+  Phone, PieChart, Rocket, Search, Settings, Share2, Smile,
+  Sun, ThumbsUp, TreePine, TrendingUp, Trophy, Truck,
+  Umbrella, Zap, ArrowRight, Bell, Calendar, Cpu, Download,
+} from 'lucide-react'
 import adminService from '../services/adminService'
 import Alert from '../components/ui/Alert'
+
+const ICON_MAP = {
+  Heart, Shield, Star, Users, Target, Eye, Lightbulb, Leaf,
+  CheckCircle, Award, Globe, Home, Book, Briefcase, Building,
+  Camera, Clock, Cloud, Code, Coffee, Compass, Database,
+  Flag, Gift, HeartHandshake, Headphones, Info, Key,
+  Layers, Link, Lock, Mail, Map, MessageCircle, Music,
+  Phone, PieChart, Rocket, Search, Settings, Share2, Smile,
+  Sun, ThumbsUp, TreePine, TrendingUp, Trophy, Truck,
+  Umbrella, Zap, ArrowRight, Bell, Calendar, Cpu, Download,
+}
+
+function DynamicIcon({ name, size, DefaultIcon }) {
+  const Icon = (name && ICON_MAP[name]) ? ICON_MAP[name] : DefaultIcon
+  return <Icon size={size} />
+}
 
 function PageSkeleton() {
   return (
@@ -33,6 +58,9 @@ export default function QuienesSomos() {
     ?.sort((a, b) => a.orden - b.orden)
     ?.map((s) => s.contenido)
     || []
+
+  const quienesSomosIcono = page?.secciones?.find((s) => s.seccion === 'quienes_somos')?.icono || null
+  const objetivoSocialIcono = page?.secciones?.find((s) => s.seccion === 'objetivo_social')?.icono || null
 
   return (
     <div className="min-h-screen pt-20">
@@ -70,7 +98,7 @@ export default function QuienesSomos() {
                 className="bg-gradient-to-br from-funac-navy to-blue-800 rounded-2xl p-8 text-white"
               >
                 <div className="inline-flex p-3 bg-white/20 rounded-xl mb-5">
-                  <Users size={28} />
+                  <DynamicIcon name={quienesSomosIcono} size={28} DefaultIcon={Users} />
                 </div>
                 <h2 className="text-2xl font-black mb-4">Quienes Somos</h2>
                 <p className="text-blue-100 leading-relaxed">{page.quienes_somos}</p>
@@ -86,7 +114,7 @@ export default function QuienesSomos() {
                 className="bg-gradient-to-br from-funac-orange to-orange-600 rounded-2xl p-8 text-white"
               >
                 <div className="inline-flex p-3 bg-white/20 rounded-xl mb-5">
-                  <Target size={28} />
+                  <DynamicIcon name={objetivoSocialIcono} size={28} DefaultIcon={Target} />
                 </div>
                 <h2 className="text-2xl font-black mb-4">Objetivo Social</h2>
                 <p className="text-orange-100 leading-relaxed">{page.objetivo_social}</p>

@@ -1,8 +1,33 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Star, Heart, Shield, Lightbulb, Users, Leaf } from 'lucide-react'
+import {
+  Heart, Shield, Star, Users, Target, Eye, Lightbulb, Leaf,
+  CheckCircle, Award, Globe, Home, Book, Briefcase, Building,
+  Camera, Clock, Cloud, Code, Coffee, Compass, Database,
+  Flag, Gift, HeartHandshake, Headphones, Info, Key,
+  Layers, Link, Lock, Mail, Map, MessageCircle, Music,
+  Phone, PieChart, Rocket, Search, Settings, Share2, Smile,
+  Sun, ThumbsUp, TreePine, TrendingUp, Trophy, Truck,
+  Umbrella, Zap, ArrowRight, Bell, Calendar, Cpu, Download,
+} from 'lucide-react'
 import adminService from '../services/adminService'
 import Alert from '../components/ui/Alert'
+
+const ICON_MAP = {
+  Heart, Shield, Star, Users, Target, Eye, Lightbulb, Leaf,
+  CheckCircle, Award, Globe, Home, Book, Briefcase, Building,
+  Camera, Clock, Cloud, Code, Coffee, Compass, Database,
+  Flag, Gift, HeartHandshake, Headphones, Info, Key,
+  Layers, Link, Lock, Mail, Map, MessageCircle, Music,
+  Phone, PieChart, Rocket, Search, Settings, Share2, Smile,
+  Sun, ThumbsUp, TreePine, TrendingUp, Trophy, Truck,
+  Umbrella, Zap, ArrowRight, Bell, Calendar, Cpu, Download,
+}
+
+function DynamicIcon({ name, size, DefaultIcon }) {
+  const Icon = (name && ICON_MAP[name]) ? ICON_MAP[name] : DefaultIcon
+  return <Icon size={size} />
+}
 
 const defaultValores = [
   { icon: Heart,     title: 'Solidaridad',   description: 'Actuamos con empatia y compromiso hacia quienes mas lo necesitan.',                          color: 'bg-red-100 text-red-600' },
@@ -88,7 +113,7 @@ export default function Valores() {
                     className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                   >
                     <div className={`inline-flex p-3 rounded-xl ${cardColors[i % cardColors.length]} mb-4`}>
-                      <Star size={22} />
+                      <DynamicIcon name={sec.icono || null} size={22} DefaultIcon={Star} />
                     </div>
                     <h3 className="font-bold text-gray-900 text-lg mb-2">{sec.seccion}</h3>
                     <div
