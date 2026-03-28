@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -35,29 +35,68 @@ export default function Donaciones() {
 
   const montoFinal = useCustom ? Number(montoCustom) : monto
 
+  // Cargar el script de ePayco una sola vez al montar el componente
+  useEffect(() => {
+    if (document.getElementById('epayco-script')) return
+    const script = document.createElement('script')
+    script.id = 'epayco-script'
+    script.src = 'https://checkout.epayco.co/checkout.js'
+    script.async = true
+    document.head.appendChild(script)
+  }, [])
+
   const onSubmit = async (data) => {
     if (!montoFinal || montoFinal < 1000) {
       toast.error('El monto minimo es de $1.000')
       return
     }
+
+    if (!window.ePayco) {
+      toast.error('El portal de pagos aun esta cargando. Intenta en un momento.')
+      return
+    }
+
     setLoading(true)
     try {
+      // 1. Registrar la donacion en el backend y obtener la referencia
       const result = await donationService.initDonation({
         ...data,
         monto: montoFinal,
-        recurrente,
-        mostrar_en_muro: mostrarEnMuro,
+        es_recurrente: recurrente,
+        aparecer_muro_donantes: mostrarEnMuro,
       })
-      if (result?.checkout_url) {
-        window.location.href = result.checkout_url
-      } else {
-        toast('Integracion de pagos en configuracion. Tu donacion sera procesada pronto.', {
-          icon: 'ℹ️',
-          duration: 6000,
-        })
-      }
+
+      const referencia = result.data?.referencia_epayco
+      if (!referencia) throw new Error('No se recibio referencia del servidor')
+
+      // 2. Abrir el checkout de ePayco
+      const handler = window.ePayco.checkout.configure({
+        key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
+        test: import.meta.env.VITE_EPAYCO_TEST_MODE === 'true',
+      })
+
+      handler.open({
+        name: 'FUNAC - Donacion',
+        description: `Donacion a FUNAC`,
+        invoice: referencia,
+        currency: 'cop',
+        amount: String(montoFinal),
+        tax_base: '0',
+        tax: '0',
+        country: 'co',
+        lang: 'es',
+        external: 'false',
+        response: `${window.location.origin}/donacion/exito`,
+        confirmation: `${import.meta.env.VITE_API_URL}/donations/webhook`,
+        name_billing: data.nombre_completo,
+        email_billing: data.email,
+        type_doc_billing: 'cc',
+        number_doc_billing: data.cedula,
+        mobilephone_billing: data.telefono || '',
+        extra1: referencia,
+      })
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Error al procesar la donacion. Intenta nuevamente.'
+      const msg = err?.response?.data?.error || err?.message || 'Error al procesar la donacion. Intenta nuevamente.'
       toast.error(msg)
     } finally {
       setLoading(false)

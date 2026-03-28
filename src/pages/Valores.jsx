@@ -5,12 +5,23 @@ import adminService from '../services/adminService'
 import Alert from '../components/ui/Alert'
 
 const defaultValores = [
-  { icon: Heart, title: 'Solidaridad', description: 'Actuamos con empatia y compromiso hacia quienes mas lo necesitan.', color: 'bg-red-100 text-red-600' },
-  { icon: Shield, title: 'Integridad', description: 'Somos transparentes, honestos y responsables en todas nuestras acciones.', color: 'bg-blue-100 text-blue-600' },
-  { icon: Lightbulb, title: 'Innovacion', description: 'Buscamos soluciones creativas para los desafios de nuestra comunidad.', color: 'bg-yellow-100 text-yellow-600' },
-  { icon: Users, title: 'Participacion', description: 'Fomentamos la inclusion y la participacion activa de todos.', color: 'bg-green-100 text-green-600' },
-  { icon: Star, title: 'Excelencia', description: 'Nos esforzamos por la calidad en cada proyecto y accion que emprendemos.', color: 'bg-purple-100 text-purple-600' },
-  { icon: Leaf, title: 'Sostenibilidad', description: 'Desarrollamos proyectos que tienen impacto duradero y positivo.', color: 'bg-emerald-100 text-emerald-600' },
+  { icon: Heart,     title: 'Solidaridad',   description: 'Actuamos con empatia y compromiso hacia quienes mas lo necesitan.',                          color: 'bg-red-100 text-red-600' },
+  { icon: Shield,    title: 'Integridad',     description: 'Somos transparentes, honestos y responsables en todas nuestras acciones.',                    color: 'bg-blue-100 text-blue-600' },
+  { icon: Lightbulb, title: 'Innovacion',     description: 'Buscamos soluciones creativas para los desafios de nuestra comunidad.',                       color: 'bg-yellow-100 text-yellow-600' },
+  { icon: Users,     title: 'Participacion',  description: 'Fomentamos la inclusion y la participacion activa de todos.',                                 color: 'bg-green-100 text-green-600' },
+  { icon: Star,      title: 'Excelencia',     description: 'Nos esforzamos por la calidad en cada proyecto y accion que emprendemos.',                    color: 'bg-purple-100 text-purple-600' },
+  { icon: Leaf,      title: 'Sostenibilidad', description: 'Desarrollamos proyectos que tienen impacto duradero y positivo.',                             color: 'bg-emerald-100 text-emerald-600' },
+]
+
+const cardColors = [
+  'bg-red-100 text-red-600',
+  'bg-blue-100 text-blue-600',
+  'bg-yellow-100 text-yellow-600',
+  'bg-green-100 text-green-600',
+  'bg-purple-100 text-purple-600',
+  'bg-emerald-100 text-emerald-600',
+  'bg-orange-100 text-orange-600',
+  'bg-pink-100 text-pink-600',
 ]
 
 function PageSkeleton() {
@@ -34,6 +45,9 @@ export default function Valores() {
       .catch(() => setError(null))
       .finally(() => setLoading(false))
   }, [])
+
+  // Si hay secciones en la BD, usarlas como cards. Si no, mostrar los valores por defecto.
+  const tieneContenidoDB = page?.secciones?.length > 0
 
   return (
     <div className="min-h-screen pt-20">
@@ -61,44 +75,47 @@ export default function Valores() {
         {loading && <PageSkeleton />}
         {error && <Alert type="error" message={error} />}
 
-        {/* Dynamic content from API */}
-        {page?.secciones?.length > 0 && (
-          <div className="mb-12">
-            {page.secciones.map((seccion, i) => (
-              <div key={i} className="mb-8">
-                {seccion.titulo && (
-                  <h2 className="text-2xl font-bold text-funac-navy mb-3">{seccion.titulo}</h2>
-                )}
-                {seccion.contenido && (
-                  <div
-                    className="text-gray-600 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: seccion.contenido }}
-                  />
-                )}
-              </div>
-            ))}
+        {!loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tieneContenidoDB
+              ? page.secciones.map((sec, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.08 }}
+                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                  >
+                    <div className={`inline-flex p-3 rounded-xl ${cardColors[i % cardColors.length]} mb-4`}>
+                      <Star size={22} />
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-lg mb-2">{sec.seccion}</h3>
+                    <div
+                      className="text-gray-500 text-sm leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: sec.contenido }}
+                    />
+                  </motion.div>
+                ))
+              : defaultValores.map((valor, i) => (
+                  <motion.div
+                    key={valor.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.08 }}
+                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                  >
+                    <div className={`inline-flex p-3 rounded-xl ${valor.color} mb-4`}>
+                      <valor.icon size={22} />
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-lg mb-2">{valor.title}</h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">{valor.description}</p>
+                  </motion.div>
+                ))
+            }
           </div>
         )}
-
-        {/* Default valores grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {defaultValores.map((valor, i) => (
-            <motion.div
-              key={valor.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-            >
-              <div className={`inline-flex p-3 rounded-xl ${valor.color} mb-4`}>
-                <valor.icon size={22} />
-              </div>
-              <h3 className="font-bold text-gray-900 text-lg mb-2">{valor.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{valor.description}</p>
-            </motion.div>
-          ))}
-        </div>
       </section>
     </div>
   )

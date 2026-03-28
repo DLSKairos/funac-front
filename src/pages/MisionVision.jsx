@@ -13,6 +13,9 @@ function PageSkeleton() {
   )
 }
 
+const DEFAULT_MISION = 'Promover el desarrollo integral de las comunidades mas vulnerables mediante programas de educacion, salud, vivienda y fortalecimiento social, con la participacion activa de voluntarios comprometidos con el cambio social.'
+const DEFAULT_VISION = 'Ser la fundacion de mayor impacto social en Colombia, reconocida por transformar vidas y comunidades a traves de la solidaridad, la innovacion y el trabajo colectivo hacia un futuro mas justo e igualitario.'
+
 export default function MisionVision() {
   const [page, setPage] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -51,8 +54,8 @@ export default function MisionVision() {
         {loading && <PageSkeleton />}
         {error && <Alert type="error" title="Error" message={error} />}
 
-        {!loading && (
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
+        {!loading && !error && (
+          <div className="grid md:grid-cols-2 gap-8">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -64,8 +67,7 @@ export default function MisionVision() {
               </div>
               <h2 className="text-2xl font-black mb-4">Nuestra Mision</h2>
               <p className="text-blue-100 leading-relaxed">
-                {page?.mision ||
-                  'Promover el desarrollo integral de las comunidades mas vulnerables mediante programas de educacion, salud, vivienda y fortalecimiento social, con la participacion activa de voluntarios comprometidos con el cambio social.'}
+                {page?.mision || DEFAULT_MISION}
               </p>
             </motion.div>
 
@@ -80,33 +82,11 @@ export default function MisionVision() {
               </div>
               <h2 className="text-2xl font-black mb-4">Nuestra Vision</h2>
               <p className="text-orange-100 leading-relaxed">
-                {page?.vision ||
-                  'Ser la fundacion de mayor impacto social en Colombia, reconocida por transformar vidas y comunidades a traves de la solidaridad, la innovacion y el trabajo colectivo hacia un futuro mas justo e igualitario.'}
+                {page?.vision || DEFAULT_VISION}
               </p>
             </motion.div>
           </div>
         )}
-
-        {/* Extra sections from API */}
-        {page?.secciones?.map((seccion, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="mb-10"
-          >
-            {seccion.titulo && (
-              <h3 className="text-xl font-bold text-funac-navy mb-3">{seccion.titulo}</h3>
-            )}
-            {seccion.contenido && (
-              <div
-                className="text-gray-600 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: seccion.contenido }}
-              />
-            )}
-          </motion.div>
-        ))}
       </section>
     </div>
   )

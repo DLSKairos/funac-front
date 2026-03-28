@@ -4,7 +4,13 @@ const adminService = {
   // Dashboard
   async getDashboardStats() {
     const response = await api.get('/admin/dashboard/stats')
-    return response.data
+    const d = response.data?.data
+    return {
+      total_donaciones: Number(d?.donaciones?.total ?? 0),
+      monto_total: Number(d?.donaciones?.total_recaudado ?? 0),
+      total_voluntarios: Number(d?.voluntarios?.total ?? 0),
+      voluntarios_nuevos: Number(d?.voluntarios?.ultimos_30_dias ?? 0),
+    }
   },
 
   async getDonationsChart(months = 6) {
@@ -77,12 +83,15 @@ const adminService = {
   // Volunteers
   async getVolunteers(params) {
     const response = await api.get('/admin/volunteers', { params })
-    return response.data
+    return {
+      voluntarios: response.data?.data || [],
+      total: response.data?.pagination?.total || 0,
+    }
   },
 
   async getVolunteer(id) {
     const response = await api.get(`/admin/volunteers/${id}`)
-    return response.data
+    return response.data?.data
   },
 
   async updateVolunteerStatus(id, data) {
@@ -98,12 +107,15 @@ const adminService = {
   // Donations
   async getDonations(params) {
     const response = await api.get('/admin/donations', { params })
-    return response.data
+    return {
+      donaciones: response.data?.data || [],
+      total: response.data?.pagination?.total || 0,
+    }
   },
 
   async getDonation(id) {
     const response = await api.get(`/admin/donations/${id}`)
-    return response.data
+    return response.data?.data
   },
 
   async resendReceipt(id) {
@@ -127,7 +139,16 @@ const adminService = {
 
   async getPageContent(pagina) {
     const response = await api.get(`/pages/${pagina}`)
-    return response.data
+    const rows = response.data?.data || []
+    // byKey permite acceder a page.mision, page.vision, etc. directamente
+    const byKey = {}
+    rows.forEach((r) => { byKey[r.seccion] = r.contenido })
+    return { secciones: rows, ...byKey }
+  },
+
+  async getAdminPageContent(pagina) {
+    const response = await api.get(`/admin/pages/${pagina}`)
+    return response.data?.data || []
   },
 
   async updatePage(pagina, data) {

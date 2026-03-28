@@ -12,10 +12,11 @@ import { formatDate, formatPhone } from '../../utils/formatters'
 
 const ESTADO_OPTIONS = [
   { value: '', label: 'Todos los estados' },
-  { value: 'nuevo', label: 'Nuevo' },
-  { value: 'contactado', label: 'Contactado' },
+  { value: 'pendiente', label: 'Pendiente' },
+  { value: 'en_revision', label: 'En revision' },
   { value: 'aprobado', label: 'Aprobado' },
   { value: 'rechazado', label: 'Rechazado' },
+  { value: 'inactivo', label: 'Inactivo' },
 ]
 
 const AREAS_LABEL = {
@@ -153,7 +154,7 @@ export default function VoluntariosPage() {
                     <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{v.ciudad}</td>
                     <td className="px-4 py-3 text-gray-500 hidden lg:table-cell">{v.profesion_ocupacion || '—'}</td>
                     <td className="px-4 py-3">
-                      <Badge variant={v.estado || 'nuevo'} />
+                      <Badge variant={v.estado || 'pendiente'} />
                     </td>
                     <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{formatDate(v.createdAt || v.fecha_registro)}</td>
                     <td className="px-4 py-3">
@@ -248,19 +249,19 @@ export default function VoluntariosPage() {
 
             {/* Actions */}
             <div className="flex flex-wrap gap-2 pt-4 border-t border-gray-100">
-              {['contactado', 'aprobado', 'rechazado'].map((est) => (
+              {['en_revision', 'aprobado', 'rechazado', 'inactivo'].map((est) => (
                 <Button
                   key={est}
                   size="sm"
                   variant={
                     est === 'aprobado' ? 'primary' :
-                    est === 'rechazado' ? 'danger' : 'secondary'
+                    est === 'rechazado' || est === 'inactivo' ? 'danger' : 'secondary'
                   }
                   loading={updatingId === selected.id}
                   disabled={selected.estado === est}
                   onClick={() => updateStatus(selected.id, est)}
                 >
-                  {est.charAt(0).toUpperCase() + est.slice(1)}
+                  {{ en_revision: 'En revision', aprobado: 'Aprobado', rechazado: 'Rechazado', inactivo: 'Inactivo' }[est]}
                 </Button>
               ))}
               {selected.cv_url && (

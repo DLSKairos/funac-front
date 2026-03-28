@@ -49,7 +49,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-blue-200 text-sm leading-relaxed">
-              Fundacion de Apoyo a la Comunidad. Trabajamos para construir un futuro mejor a traves del voluntariado, la solidaridad y el compromiso social.
+              Fundación Ayudando a Construir Trabajamos para construir un futuro mejor a traves del voluntariado, la solidaridad y el compromiso social
             </p>
           </div>
 
@@ -94,13 +94,17 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-blue-300 text-sm">
-            &copy; {new Date().getFullYear()} FUNAC. Todos los derechos reservados.
-          </p>
-          <p className="text-blue-300 text-sm flex items-center gap-1.5">
-            Hecho con <Heart size={14} className="text-funac-orange" /> por la comunidad
-          </p>
+        <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="text-blue-300 text-sm">&copy; {new Date().getFullYear()} FUNAC. Todos los derechos reservados.</p>
+            <p className="text-blue-300 text-sm flex items-center gap-1.5 mt-1">
+              Hecho con <Heart size={14} className="text-funac-orange fill-funac-orange" /> para la comunidad
+            </p>
+          </div>
+          <div className="text-right text-xs text-blue-400 leading-relaxed">
+            <p>&copy; 2026 Karios DLS Group S.A.S</p>
+            <p>Hecho con orgullo en Colombia 🇨🇴</p>
+          </div>
         </div>
       </div>
     </footer>

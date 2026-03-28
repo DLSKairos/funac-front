@@ -8,7 +8,260 @@ import Textarea from '../../components/ui/Textarea'
 import Spinner from '../../components/ui/Spinner'
 import { formatFileSize } from '../../utils/formatters'
 
-const TABS = ['Carrusel', 'PDFs', 'Redes Sociales', 'WhatsApp']
+const TABS = ['Paginas', 'Carrusel', 'PDFs', 'Redes Sociales', 'WhatsApp']
+
+// ─── Páginas Tab ─────────────────────────────────────────────────────────────
+const PAGES_CONFIG = [
+  { key: 'quienes_somos', label: 'Quienes Somos' },
+  { key: 'mision_vision', label: 'Mision y Vision' },
+  { key: 'valores',       label: 'Valores' },
+]
+
+function PaginasTab() {
+  const [selectedPage, setSelectedPage] = useState('quienes_somos')
+  const [secciones, setSecciones] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
+
+  const loadPage = (pagina) => {
+    setLoading(true)
+    adminService.getAdminPageContent(pagina)
+      .then((rows) => {
+        if (pagina === 'mision_vision') {
+          const m = rows.find((r) => r.seccion === 'mision')
+          const v = rows.find((r) => r.seccion === 'vision')
+          setSecciones([
+            { seccion: 'mision',  contenido: m?.contenido || '', orden: 0, activo: true },
+            { seccion: 'vision',  contenido: v?.contenido || '', orden: 1, activo: true },
+          ])
+        } else if (pagina === 'quienes_somos') {
+          const get = (key) => rows.find((r) => r.seccion === key)
+          const objs = rows
+            .filter((r) => r.seccion.startsWith('objetivo_') && r.seccion !== 'objetivo_social')
+            .sort((a, b) => a.orden - b.orden)
+          setSecciones([
+            { seccion: 'quienes_somos',   contenido: get('quienes_somos')?.contenido   || '', orden: 0, activo: true },
+            { seccion: 'objetivo_social', contenido: get('objetivo_social')?.contenido || '', orden: 1, activo: true },
+            ...(objs.length > 0
+              ? objs.map((o, i) => ({ ...o, orden: i + 2 }))
+              : [{ seccion: 'objetivo_1', contenido: '', orden: 2, activo: true }]
+            ),
+          ])
+        } else if (!rows?.length) {
+          setSecciones([{ seccion: 'seccion_1', contenido: '', orden: 0, activo: true }])
+        } else {
+          setSecciones(rows.map((r) => ({ ...r })))
+        }
+      })
+      .catch(() => toast.error('Error al cargar contenido'))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { loadPage(selectedPage) }, [selectedPage])
+
+  const handleChange = (idx, field, value) => {
+    setSecciones((prev) => prev.map((s, i) => i === idx ? { ...s, [field]: value } : s))
+  }
+
+  const addSection = () => {
+    setSecciones((prev) => [...prev, { seccion: '', contenido: '', orden: prev.length, activo: true }])
+  }
+
+  const removeSection = (idx) => {
+    setSecciones((prev) => prev.filter((_, i) => i !== idx))
+  }
+
+  const handleSave = async () => {
+    const invalid = secciones.some((s) => !s.seccion.trim())
+    if (invalid) { toast.error('Cada seccion debe tener un nombre'); return }
+    setSaving(true)
+    try {
+      await adminService.updatePage(selectedPage, { secciones })
+      toast.success('Pagina guardada correctamente')
+    } catch {
+      toast.error('Error al guardar')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-bold text-gray-900">Editar paginas</h2>
+        <Button onClick={handleSave} loading={saving} icon={Save}>Guardar cambios</Button>
+      </div>
+
+      {/* Selector de página */}
+      <div className="flex gap-2 mb-6 flex-wrap">
+        {PAGES_CONFIG.map((p) => (
+          <button
+            key={p.key}
+            onClick={() => setSelectedPage(p.key)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium border-2 transition-all ${
+              selectedPage === p.key
+                ? 'border-funac-navy bg-funac-navy text-white'
+                : 'border-gray-200 text-gray-600 hover:border-funac-navy'
+            }`}
+          >
+            {p.label}
+          </button>
+        ))}
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center py-12"><Spinner /></div>
+      ) : selectedPage === 'quienes_somos' ? (
+        /* ── Formulario estructurado para Quiénes Somos ── */
+        <div className="space-y-6 max-w-2xl">
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-1">Quienes Somos</p>
+            <Textarea
+              rows={5}
+              value={secciones.find((s) => s.seccion === 'quienes_somos')?.contenido || ''}
+              onChange={(e) => handleChange(secciones.findIndex((s) => s.seccion === 'quienes_somos'), 'contenido', e.target.value)}
+              placeholder="Describe quienes son como fundacion..."
+            />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-gray-700 mb-1">Objetivo Social</p>
+            <Textarea
+              rows={4}
+              value={secciones.find((s) => s.seccion === 'objetivo_social')?.contenido || ''}
+              onChange={(e) => handleChange(secciones.findIndex((s) => s.seccion === 'objetivo_social'), 'contenido', e.target.value)}
+              placeholder="Describe el objetivo social de FUNAC..."
+            />
+          </div>
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-semibold text-gray-700">Objetivos Especificos</p>
+              <button
+                type="button"
+                onClick={() => {
+                  const objs = secciones.filter((s) => s.seccion.startsWith('objetivo_') && s.seccion !== 'objetivo_social')
+                  setSecciones((prev) => [...prev, {
+                    seccion: `objetivo_${objs.length + 1}`,
+                    contenido: '',
+                    orden: prev.length,
+                    activo: true,
+                  }])
+                }}
+                className="flex items-center gap-1.5 text-xs text-funac-navy font-medium hover:underline"
+              >
+                <Plus size={14} /> Agregar objetivo
+              </button>
+            </div>
+            <div className="space-y-3">
+              {secciones
+                .map((s, idx) => ({ ...s, _idx: idx }))
+                .filter((s) => s.seccion.startsWith('objetivo_') && s.seccion !== 'objetivo_social')
+                .map((sec, n) => (
+                  <div key={sec.seccion} className="flex gap-2 items-start">
+                    <div className="flex-1">
+                      <p className="text-xs text-gray-500 mb-1">Objetivo {n + 1}</p>
+                      <Textarea
+                        rows={2}
+                        value={sec.contenido}
+                        onChange={(e) => handleChange(sec._idx, 'contenido', e.target.value)}
+                        placeholder={`Describe el objetivo especifico ${n + 1}...`}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // Eliminar y renumerar
+                        setSecciones((prev) => {
+                          const filtered = prev.filter((_, i) => i !== sec._idx)
+                          let n = 0
+                          return filtered.map((s) => {
+                            if (s.seccion.startsWith('objetivo_') && s.seccion !== 'objetivo_social') {
+                              n++
+                              return { ...s, seccion: `objetivo_${n}`, orden: n + 1 }
+                            }
+                            return s
+                          })
+                        })
+                      }}
+                      className="mt-6 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0"
+                      title="Eliminar objetivo"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      ) : selectedPage === 'mision_vision' ? (
+        /* ── Formulario simplificado solo para Misión / Visión ── */
+        <div className="space-y-6 max-w-2xl">
+          <Textarea
+            label="Mision"
+            rows={5}
+            value={secciones.find((s) => s.seccion === 'mision')?.contenido || ''}
+            onChange={(e) => handleChange(secciones.findIndex((s) => s.seccion === 'mision'), 'contenido', e.target.value)}
+            placeholder="Describe la mision de FUNAC..."
+          />
+          <Textarea
+            label="Vision"
+            rows={5}
+            value={secciones.find((s) => s.seccion === 'vision')?.contenido || ''}
+            onChange={(e) => handleChange(secciones.findIndex((s) => s.seccion === 'vision'), 'contenido', e.target.value)}
+            placeholder="Describe la vision de FUNAC..."
+          />
+        </div>
+      ) : (
+        /* ── Editor generico para Quienes Somos y Valores ── */
+        <div className="space-y-6">
+          {secciones.map((sec, idx) => (
+            <div key={idx} className="border border-gray-200 rounded-xl p-4">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="flex-1">
+                  <Input
+                    label="Titulo de la seccion"
+                    value={sec.seccion}
+                    onChange={(e) => handleChange(idx, 'seccion', e.target.value)}
+                    placeholder="ej: Historia, Nuestro Equipo, Compromiso..."
+                  />
+                </div>
+                <label className="flex items-center gap-1.5 mt-5 shrink-0 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={sec.activo !== false}
+                    onChange={(e) => handleChange(idx, 'activo', e.target.checked)}
+                    className="w-4 h-4 text-funac-orange rounded"
+                  />
+                  <span className="text-xs text-gray-500">Visible</span>
+                </label>
+                <button
+                  onClick={() => removeSection(idx)}
+                  className="mt-5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors shrink-0"
+                  title="Eliminar seccion"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+              <Textarea
+                label="Contenido"
+                rows={6}
+                value={sec.contenido}
+                onChange={(e) => handleChange(idx, 'contenido', e.target.value)}
+                placeholder="Escribe el contenido de esta seccion..."
+              />
+            </div>
+          ))}
+          <button
+            onClick={addSection}
+            className="flex items-center gap-2 px-4 py-2.5 border-2 border-dashed border-gray-300 rounded-xl text-sm text-gray-500 hover:border-funac-navy hover:text-funac-navy transition-colors w-full justify-center"
+          >
+            <Plus size={16} /> Agregar seccion
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 // ─── Carousel Tab ────────────────────────────────────────────────────────────
 function CarouselTab() {
@@ -403,7 +656,7 @@ function WhatsAppTab() {
 export default function ContenidoPage() {
   const [activeTab, setActiveTab] = useState(0)
 
-  const tabComponents = [CarouselTab, PDFsTab, SocialTab, WhatsAppTab]
+  const tabComponents = [PaginasTab, CarouselTab, PDFsTab, SocialTab, WhatsAppTab]
   const ActiveComponent = tabComponents[activeTab]
 
   return (
