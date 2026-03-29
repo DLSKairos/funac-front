@@ -436,7 +436,7 @@ function PDFsTab() {
 
   const load = () => {
     adminService.getPDFs()
-      .then((d) => setPdfs(Array.isArray(d) ? d : (d?.pdfs || [])))
+      .then((d) => setPdfs(Array.isArray(d) ? d : []))
       .catch(() => toast.error('Error al cargar PDFs'))
       .finally(() => setLoading(false))
   }
@@ -509,7 +509,7 @@ function PDFsTab() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">{pdf.titulo || pdf.nombre}</p>
                   {pdf.descripcion && <p className="text-xs text-gray-400 truncate">{pdf.descripcion}</p>}
-                  {pdf.tamano && <p className="text-xs text-gray-400">{formatFileSize(pdf.tamano)}</p>}
+                  {pdf.tamano_archivo && <p className="text-xs text-gray-400">{formatFileSize(pdf.tamano_archivo)}</p>}
                 </div>
                 <button
                   onClick={() => handleDelete(pdf.id)}

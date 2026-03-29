@@ -43,8 +43,8 @@ const adminService = {
 
   // PDFs
   async getPDFs() {
-    const response = await api.get('/home/pdfs')
-    return response.data
+    const response = await api.get('/admin/pdfs')
+    return response.data?.data || []
   },
 
   async uploadPDF(formData) {

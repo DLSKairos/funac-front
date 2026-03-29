@@ -8,7 +8,7 @@ const homeService = {
 
   async getPDFs() {
     const response = await api.get('/home/pdfs')
-    return response.data
+    return response.data?.data || []
   },
 
   async getSocialMedia() {

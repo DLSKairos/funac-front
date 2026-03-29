@@ -23,7 +23,7 @@ export default function PDFSection() {
   useEffect(() => {
     homeService.getPDFs()
       .then((data) => {
-        const docs = Array.isArray(data) ? data : (data?.pdfs || [])
+        const docs = Array.isArray(data) ? data : []
         setPdfs(docs)
       })
       .catch(() => {})
@@ -37,10 +37,10 @@ export default function PDFSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 mb-4">
-            Documentos informativos
+            Licitaciones y Documeentos de interés
           </h2>
           <p className="text-gray-600 max-w-xl mx-auto">
-            Descarga nuestros materiales informativos, informes y documentos de interes.
+            Estos son nuestros Documentos públicos disponibles para consulta y descarga.
           </p>
         </div>
 
@@ -64,10 +64,9 @@ export default function PDFSection() {
                     <p className="text-sm text-gray-500 mb-4 line-clamp-2">{pdf.descripcion}</p>
                   )}
                   <a
-                    href={pdf.url || pdf.archivo_url}
+                    href={`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/home/pdfs/${pdf.id}/download`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    download
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-funac-orange text-white text-sm font-medium hover:bg-orange-600 transition-colors"
                   >
                     <Download size={15} />
