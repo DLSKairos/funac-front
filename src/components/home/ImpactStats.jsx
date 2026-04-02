@@ -3,9 +3,9 @@ import { motion } from 'framer-motion'
 import { Users, Heart, Briefcase, HeartHandshake } from 'lucide-react'
 
 const stats = [
-  { icon: Users, value: 89, label: 'Voluntarios activos', suffix: '+', color: 'text-funac-orange' },
-  { icon: Heart, value: 1240, label: 'Familias beneficiadas', suffix: '', color: 'text-funac-green' },
-  { icon: Briefcase, value: 45, label: 'Proyectos ejecutados', suffix: '', color: 'text-funac-yellow' },
+  { icon: Users, value: 89, label: 'Voluntarios activos', suffix: '+', color: 'text-white' },
+  { icon: Heart, value: 1240, label: 'Familias beneficiadas', suffix: '', color: 'text-white' },
+  { icon: Briefcase, value: 45, label: 'Proyectos ejecutados', suffix: '', color: 'text-white' },
   { icon: HeartHandshake, value: 156, label: 'Donaciones recibidas', suffix: '', color: 'text-white' },
 ]
 
@@ -75,10 +75,10 @@ export default function ImpactStats() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
-            Nuestro impacto en numeros
+            Nuestro impacto en números
           </h2>
           <p className="text-blue-200 max-w-xl mx-auto">
-            Cada cifra representa una vida transformada, una familia apoyada y un sueno hecho realidad.
+            Cada cifra representa una vida transformada, una familia apoyada y un sueño hecho realidad.
           </p>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">

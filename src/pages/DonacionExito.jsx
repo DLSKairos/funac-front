@@ -18,7 +18,7 @@ export default function DonacionExito() {
           </div>
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
-            transition={{ repeat: Infinity, duration: 2 }}
+            transition={{ duration: 2 }}
             className="absolute -top-1 -right-1 w-8 h-8 bg-funac-orange rounded-full flex items-center justify-center"
           >
             <Heart size={16} className="text-white fill-white" />

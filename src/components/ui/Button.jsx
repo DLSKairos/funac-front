@@ -2,11 +2,11 @@ import Spinner from './Spinner'
 
 const variantClasses = {
   primary:
-    'bg-gradient-to-r from-funac-orange to-orange-500 text-white hover:from-orange-500 hover:to-funac-orange shadow-md hover:shadow-lg',
+    'bg-funac-orange text-white hover:bg-[#A8461F] shadow-sm',
   secondary:
     'bg-funac-navy text-white hover:bg-blue-900 shadow-md hover:shadow-lg',
   outline:
-    'border-2 border-funac-orange text-funac-orange bg-transparent hover:bg-funac-orange hover:text-white',
+    'border-2 border-funac-navy text-funac-navy bg-transparent hover:bg-funac-navy hover:text-white',
   ghost:
     'bg-transparent text-gray-700 hover:bg-gray-100',
   danger:
@@ -37,7 +37,7 @@ export default function Button({
       type={type}
       disabled={isDisabled}
       className={`
-        inline-flex items-center justify-center gap-2 font-medium rounded-lg
+        inline-flex items-center justify-center gap-2 font-medium rounded-md
         transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-funac-orange focus:ring-offset-2
         disabled:opacity-60 disabled:cursor-not-allowed
         ${variantClasses[variant]}

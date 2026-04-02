@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { Menu, X, Facebook, Instagram, Twitter, Youtube, Linkedin, UserCog } from 'lucide-react'
+import { Menu, X, Facebook, Instagram, Twitter, Youtube, Linkedin } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Button from '../ui/Button'
 import homeService from '../../services/homeService'
@@ -9,7 +9,7 @@ const navLinks = [
   { to: '/', label: 'Inicio' },
   { to: '/quienes-somos', label: 'Quienes Somos' },
   { to: '/valores', label: 'Valores' },
-  { to: '/mision-vision', label: 'Mision y Vision' },
+  { to: '/mision-vision', label: 'Misión y Visión' },
   { to: '/contacto', label: 'Contacto' },
   { to: '/voluntarios', label: 'Voluntarios' },
 ]
@@ -52,13 +52,10 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-funac-orange to-funac-navy flex items-center justify-center">
-              <span className="text-white font-black text-sm">F</span>
+            <div className="w-8 h-8 rounded-lg bg-funac-navy flex items-center justify-center">
+              <span className="text-white font-bold text-sm">F</span>
             </div>
-            <span className="font-black text-xl">
-              <span className="text-funac-orange">FUN</span>
-              <span className="text-funac-navy">AC</span>
-            </span>
+            <span className="font-bold text-xl text-funac-navy">FUNAC</span>
           </Link>
 
           {/* Desktop nav */}
@@ -71,7 +68,7 @@ export default function Navbar() {
                 className={({ isActive }) =>
                   `px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? 'text-funac-orange bg-orange-50'
+                      ? 'text-funac-navy font-semibold border-b-2 border-funac-navy bg-transparent'
                       : 'text-gray-600 hover:text-funac-navy hover:bg-gray-50'
                   }`
                 }
@@ -105,13 +102,6 @@ export default function Navbar() {
             <Link to="/donaciones">
               <Button size="sm">Donar Ahora</Button>
             </Link>
-            <Link
-              to="/admin"
-              className="p-2 text-gray-400 hover:text-funac-navy transition-colors rounded-lg hover:bg-gray-50"
-              title="Panel Administrador"
-            >
-              <UserCog size={18} />
-            </Link>
           </div>
 
           {/* Mobile hamburger */}
@@ -144,7 +134,7 @@ export default function Navbar() {
                   className={({ isActive }) =>
                     `block px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                       isActive
-                        ? 'text-funac-orange bg-orange-50'
+                        ? 'text-funac-navy font-semibold border-b-2 border-funac-navy bg-transparent'
                         : 'text-gray-600 hover:text-funac-navy hover:bg-gray-50'
                     }`
                   }
@@ -155,14 +145,6 @@ export default function Navbar() {
               <div className="pt-2 pb-1 space-y-2">
                 <Link to="/donaciones" onClick={() => setMenuOpen(false)}>
                   <Button size="sm" className="w-full">Donar Ahora</Button>
-                </Link>
-                <Link
-                  to="/admin"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:text-funac-navy hover:bg-gray-50 transition-colors"
-                >
-                  <UserCog size={16} />
-                  Panel Administrador
                 </Link>
               </div>
             </div>

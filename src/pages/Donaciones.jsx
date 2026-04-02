@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import toast from 'react-hot-toast'
-import { Heart, RefreshCw, ExternalLink } from 'lucide-react'
+import { RefreshCw, ExternalLink } from 'lucide-react'
 import Input from '../components/ui/Input'
 import Button from '../components/ui/Button'
 import donationService from '../services/donationService'
@@ -105,12 +105,12 @@ export default function Donaciones() {
 
   return (
     <div className="min-h-screen pt-20">
-      <section className="bg-gradient-to-br from-funac-orange to-orange-600 text-white py-16">
+      <section className="bg-funac-orange text-white py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl font-black mb-4"
+            className="text-4xl sm:text-5xl font-bold mb-4"
           >
             Haz una Donacion
           </motion.h1>
@@ -223,7 +223,7 @@ export default function Donaciones() {
           </div>
 
           {/* Resumen */}
-          <div className="bg-orange-50 rounded-2xl p-4 mb-6 flex items-center justify-between">
+          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Total a donar</p>
               <p className="text-2xl font-black text-funac-orange">
@@ -231,7 +231,6 @@ export default function Donaciones() {
               </p>
               {recurrente && <p className="text-xs text-gray-500">Se cobrara mensualmente</p>}
             </div>
-            <Heart size={32} className="text-funac-orange fill-funac-orange opacity-30" />
           </div>
 
           <Button

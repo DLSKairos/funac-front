@@ -64,12 +64,12 @@ export default function QuienesSomos() {
 
   return (
     <div className="min-h-screen pt-20">
-      <section className="bg-gradient-to-br from-funac-navy to-blue-900 text-white py-20">
+      <section className="bg-funac-navy text-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl font-black mb-4"
+            className="text-4xl sm:text-5xl font-bold mb-4"
           >
             Quienes Somos
           </motion.h1>
@@ -95,13 +95,13 @@ export default function QuienesSomos() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-br from-funac-navy to-blue-800 rounded-2xl p-8 text-white"
+                className="bg-white border border-gray-200 border-l-4 border-l-funac-navy rounded-2xl p-8"
               >
-                <div className="inline-flex p-3 bg-white/20 rounded-xl mb-5">
+                <div className="inline-flex p-3 bg-funac-navy/10 rounded-xl mb-5 text-funac-navy">
                   <DynamicIcon name={quienesSomosIcono} size={28} DefaultIcon={Users} />
                 </div>
-                <h2 className="text-2xl font-black mb-4">Quienes Somos</h2>
-                <p className="text-blue-100 leading-relaxed">{page.quienes_somos}</p>
+                <h2 className="text-2xl font-bold mb-4 text-gray-900">Quienes Somos</h2>
+                <p className="text-gray-600 leading-relaxed">{page.quienes_somos}</p>
               </motion.div>
             )}
 
@@ -111,13 +111,13 @@ export default function QuienesSomos() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-gradient-to-br from-funac-orange to-orange-600 rounded-2xl p-8 text-white"
+                className="bg-white border border-gray-200 border-l-4 border-l-funac-orange rounded-2xl p-8"
               >
-                <div className="inline-flex p-3 bg-white/20 rounded-xl mb-5">
+                <div className="inline-flex p-3 bg-funac-orange/10 rounded-xl mb-5 text-funac-orange">
                   <DynamicIcon name={objetivoSocialIcono} size={28} DefaultIcon={Target} />
                 </div>
-                <h2 className="text-2xl font-black mb-4">Objetivo Social</h2>
-                <p className="text-orange-100 leading-relaxed">{page.objetivo_social}</p>
+                <h2 className="text-2xl font-bold mb-4 text-gray-900">Objetivo Social</h2>
+                <p className="text-gray-600 leading-relaxed">{page.objetivo_social}</p>
               </motion.div>
             )}
 
@@ -130,7 +130,7 @@ export default function QuienesSomos() {
                   viewport={{ once: true }}
                   className="text-2xl font-black text-funac-navy mb-6"
                 >
-                  Objetivos Especificos
+                  Objetivos Específicos
                 </motion.h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   {objetivos.map((obj, i) => (

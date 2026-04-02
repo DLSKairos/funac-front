@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Facebook, Instagram, Twitter, Youtube, Linkedin, Heart } from 'lucide-react'
+import { Facebook, Instagram, Twitter, Youtube, Linkedin } from 'lucide-react'
 import homeService from '../../services/homeService'
 
 const navLinks = [
@@ -43,25 +43,22 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
                 <span className="text-white font-black text-sm">F</span>
               </div>
-              <span className="font-black text-xl">
-                <span className="text-funac-orange">FUN</span>
-                <span className="text-white">AC</span>
-              </span>
+              <span className="font-bold text-xl text-white">FUNAC</span>
             </div>
-            <p className="text-blue-200 text-sm leading-relaxed">
+            <p className="text-slate-300 text-sm leading-relaxed">
               Fundación Ayudando a Construir Trabajamos para construir un futuro mejor a traves del voluntariado, la solidaridad y el compromiso social
             </p>
           </div>
 
           {/* Links */}
           <div>
-            <h3 className="font-semibold text-sm uppercase tracking-wider text-blue-300 mb-4">Navegacion</h3>
+            <h3 className="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Navegación</h3>
             <ul className="space-y-2">
               {navLinks.map((link) => (
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="text-sm text-blue-200 hover:text-funac-orange transition-colors"
+                    className="text-sm text-slate-300 hover:text-white transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -72,7 +69,7 @@ export default function Footer() {
 
           {/* Social */}
           <div>
-            <h3 className="font-semibold text-sm uppercase tracking-wider text-blue-300 mb-4">Siguenos</h3>
+            <h3 className="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Siguenos</h3>
             <div className="flex flex-wrap gap-3">
               {socialLinks.map((red) => {
                 const Icon = socialIcons[red.red?.toLowerCase()] || null
@@ -83,7 +80,7 @@ export default function Footer() {
                     href={red.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2.5 rounded-lg bg-white/10 hover:bg-funac-orange transition-colors"
+                    className="p-2.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
                     aria-label={red.red}
                   >
                     <Icon size={18} />
@@ -96,12 +93,12 @@ export default function Footer() {
 
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-blue-300 text-sm">&copy; {new Date().getFullYear()} FUNAC. Todos los derechos reservados.</p>
-            <p className="text-blue-300 text-sm flex items-center gap-1.5 mt-1">
-              Hecho con <Heart size={14} className="text-funac-orange fill-funac-orange" /> para la comunidad
+            <p className="text-slate-300 text-sm">&copy; {new Date().getFullYear()} FUNAC. Todos los derechos reservados.</p>
+            <p className="text-slate-300 text-sm mt-1">
+              Hecho con amor para la comunidad
             </p>
           </div>
-          <div className="text-right text-xs text-blue-400 leading-relaxed">
+          <div className="text-right text-xs text-slate-400 leading-relaxed">
             <p>&copy; 2026 Karios DLS Group S.A.S</p>
             <p>Hecho con orgullo en Colombia 🇨🇴</p>
           </div>

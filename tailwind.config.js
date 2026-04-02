@@ -16,7 +16,7 @@ export default {
         'scroll-x': 'scroll-x 30s linear infinite',
       },
       colors: {
-        'funac-orange': '#FF6B35',
+        'funac-orange': '#C05425',
         'funac-navy': '#1E3A8A',
         'funac-green': '#10B981',
         'funac-red': '#EF4444',

@@ -76,12 +76,12 @@ export default function Valores() {
 
   return (
     <div className="min-h-screen pt-20">
-      <section className="bg-gradient-to-br from-funac-orange to-orange-600 text-white py-20">
+      <section className="bg-funac-navy text-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl font-black mb-4"
+            className="text-4xl sm:text-5xl font-bold mb-4"
           >
             Nuestros Valores
           </motion.h1>
@@ -89,7 +89,7 @@ export default function Valores() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="text-orange-100 text-lg"
+            className="text-blue-200 text-lg"
           >
             Los principios que guian cada una de nuestras acciones
           </motion.p>
@@ -112,7 +112,7 @@ export default function Valores() {
                     transition={{ duration: 0.4, delay: i * 0.08 }}
                     className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                   >
-                    <div className={`inline-flex p-3 rounded-xl ${cardColors[i % cardColors.length]} mb-4`}>
+                    <div className="inline-flex p-3 rounded-lg bg-funac-navy/10 text-funac-navy mb-4">
                       <DynamicIcon name={sec.icono || null} size={22} DefaultIcon={Star} />
                     </div>
                     <h3 className="font-bold text-gray-900 text-lg mb-2">{sec.seccion}</h3>
@@ -131,7 +131,7 @@ export default function Valores() {
                     transition={{ duration: 0.4, delay: i * 0.08 }}
                     className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                   >
-                    <div className={`inline-flex p-3 rounded-xl ${valor.color} mb-4`}>
+                    <div className="inline-flex p-3 rounded-lg bg-funac-navy/10 text-funac-navy mb-4">
                       <valor.icon size={22} />
                     </div>
                     <h3 className="font-bold text-gray-900 text-lg mb-2">{valor.title}</h3>

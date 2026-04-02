@@ -58,20 +58,20 @@ export default function MisionVision() {
 
   return (
     <div className="min-h-screen pt-20">
-      <section className="bg-gradient-to-br from-funac-green to-emerald-700 text-white py-20">
+      <section className="bg-funac-navy text-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl font-black mb-4"
+            className="text-4xl sm:text-5xl font-bold mb-4"
           >
-            Mision y Vision
+            Misión y Visión
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="text-emerald-100 text-lg"
+            className="text-blue-200 text-lg"
           >
             Hacia donde vamos y por que lo hacemos
           </motion.p>
@@ -88,13 +88,13 @@ export default function MisionVision() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="bg-gradient-to-br from-funac-navy to-blue-800 rounded-2xl p-8 text-white"
+              className="bg-white border border-gray-200 border-l-4 border-l-funac-navy rounded-2xl p-8"
             >
-              <div className="inline-flex p-3 bg-white/20 rounded-xl mb-6">
+              <div className="inline-flex p-3 bg-funac-navy/10 rounded-xl mb-6 text-funac-navy">
                 <DynamicIcon name={misionIcono} size={28} DefaultIcon={Target} />
               </div>
-              <h2 className="text-2xl font-black mb-4">Nuestra Mision</h2>
-              <p className="text-blue-100 leading-relaxed">
+              <h2 className="text-2xl font-bold mb-4 text-gray-900">Nuestra Misión</h2>
+              <p className="text-gray-600 leading-relaxed">
                 {page?.mision || DEFAULT_MISION}
               </p>
             </motion.div>
@@ -103,13 +103,13 @@ export default function MisionVision() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="bg-gradient-to-br from-funac-orange to-orange-600 rounded-2xl p-8 text-white"
+              className="bg-white border border-gray-200 border-l-4 border-l-funac-orange rounded-2xl p-8"
             >
-              <div className="inline-flex p-3 bg-white/20 rounded-xl mb-6">
+              <div className="inline-flex p-3 bg-funac-orange/10 rounded-xl mb-6 text-funac-orange">
                 <DynamicIcon name={visionIcono} size={28} DefaultIcon={Eye} />
               </div>
-              <h2 className="text-2xl font-black mb-4">Nuestra Vision</h2>
-              <p className="text-orange-100 leading-relaxed">
+              <h2 className="text-2xl font-bold mb-4 text-gray-900">Nuestra Visión</h2>
+              <p className="text-gray-600 leading-relaxed">
                 {page?.vision || DEFAULT_VISION}
               </p>
             </motion.div>

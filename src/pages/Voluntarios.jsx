@@ -163,20 +163,20 @@ export default function Voluntarios() {
 
   return (
     <div className="min-h-screen pt-20">
-      <section className="bg-gradient-to-br from-funac-green to-emerald-700 text-white py-16">
+      <section className="bg-funac-navy text-white py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl font-black mb-4"
+            className="text-4xl sm:text-5xl font-bold mb-4"
           >
-            Se Voluntario
+            Sé Voluntario
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="text-emerald-100 text-lg"
+            className="text-blue-200 text-lg"
           >
             Completa el formulario y sé parte del cambio social
           </motion.p>

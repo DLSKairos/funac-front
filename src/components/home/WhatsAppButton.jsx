@@ -27,10 +27,9 @@ export default function WhatsAppButton() {
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ delay: 1, type: 'spring', stiffness: 200 }}
-      className="fixed bottom-20 right-6 z-50 flex items-center justify-center w-14 h-14 bg-funac-green rounded-full shadow-lg hover:shadow-xl hover:scale-110 transition-transform"
+      className="fixed bottom-20 right-6 z-50 flex items-center justify-center w-14 h-14 bg-funac-green rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-transform"
     >
-      <span className="absolute w-14 h-14 rounded-full bg-funac-green animate-ping opacity-40" />
-      <MessageCircle size={26} className="text-white relative z-10" />
+      <MessageCircle size={26} className="text-white" />
     </motion.a>
   )
 }
