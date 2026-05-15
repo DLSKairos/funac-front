@@ -1,147 +1,146 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
-  Heart, Shield, Star, Users, Target, Eye, Lightbulb, Leaf,
-  CheckCircle, Award, Globe, Home, Book, Briefcase, Building,
-  Camera, Clock, Cloud, Code, Coffee, Compass, Database,
-  Flag, Gift, HeartHandshake, Headphones, Info, Key,
-  Layers, Link, Lock, Mail, Map, MessageCircle, Music,
-  Phone, PieChart, Rocket, Search, Settings, Share2, Smile,
-  Sun, ThumbsUp, TreePine, TrendingUp, Trophy, Truck,
-  Umbrella, Zap, ArrowRight, Bell, Calendar, Cpu, Download,
+  Heart, Shield, Lightbulb, Users, Star, Leaf,
 } from 'lucide-react'
+import PageHero from '../components/PageHero'
 import adminService from '../services/adminService'
-import Alert from '../components/ui/Alert'
+import aboutHero from '@/assets/about-hero.jpg'
 
 const ICON_MAP = {
-  Heart, Shield, Star, Users, Target, Eye, Lightbulb, Leaf,
-  CheckCircle, Award, Globe, Home, Book, Briefcase, Building,
-  Camera, Clock, Cloud, Code, Coffee, Compass, Database,
-  Flag, Gift, HeartHandshake, Headphones, Info, Key,
-  Layers, Link, Lock, Mail, Map, MessageCircle, Music,
-  Phone, PieChart, Rocket, Search, Settings, Share2, Smile,
-  Sun, ThumbsUp, TreePine, TrendingUp, Trophy, Truck,
-  Umbrella, Zap, ArrowRight, Bell, Calendar, Cpu, Download,
-}
-
-function DynamicIcon({ name, size, DefaultIcon }) {
-  const Icon = (name && ICON_MAP[name]) ? ICON_MAP[name] : DefaultIcon
-  return <Icon size={size} />
+  Heart, Shield, Lightbulb, Users, Star, Leaf,
 }
 
 const defaultValores = [
-  { icon: Heart,     title: 'Solidaridad',   description: 'Actuamos con empatia y compromiso hacia quienes mas lo necesitan.',                          color: 'bg-red-100 text-red-600' },
-  { icon: Shield,    title: 'Integridad',     description: 'Somos transparentes, honestos y responsables en todas nuestras acciones.',                    color: 'bg-blue-100 text-blue-600' },
-  { icon: Lightbulb, title: 'Innovacion',     description: 'Buscamos soluciones creativas para los desafios de nuestra comunidad.',                       color: 'bg-yellow-100 text-yellow-600' },
-  { icon: Users,     title: 'Participacion',  description: 'Fomentamos la inclusion y la participacion activa de todos.',                                 color: 'bg-green-100 text-green-600' },
-  { icon: Star,      title: 'Excelencia',     description: 'Nos esforzamos por la calidad en cada proyecto y accion que emprendemos.',                    color: 'bg-purple-100 text-purple-600' },
-  { icon: Leaf,      title: 'Sostenibilidad', description: 'Desarrollamos proyectos que tienen impacto duradero y positivo.',                             color: 'bg-emerald-100 text-emerald-600' },
+  {
+    icon: 'Shield',
+    title: 'Transparencia',
+    desc: 'Cada peso recaudado es trazable. Publicamos informes trimestrales y abrimos nuestras puertas a auditorías externas.',
+    color: 'primary',
+  },
+  {
+    icon: 'Heart',
+    title: 'Solidaridad',
+    desc: 'Actuamos con empatía y compromiso hacia quienes más lo necesitan.',
+    color: 'secondary',
+  },
+  {
+    icon: 'Lightbulb',
+    title: 'Innovación',
+    desc: 'Buscamos soluciones creativas para los desafíos de nuestra comunidad.',
+    color: 'accent',
+  },
+  {
+    icon: 'Users',
+    title: 'Participación',
+    desc: 'Fomentamos la inclusión y la participación activa de todos los actores sociales.',
+    color: 'primary',
+  },
+  {
+    icon: 'Star',
+    title: 'Excelencia',
+    desc: 'Nos esforzamos por la calidad en cada proyecto y acción que emprendemos.',
+    color: 'secondary',
+  },
+  {
+    icon: 'Leaf',
+    title: 'Sostenibilidad',
+    desc: 'Desarrollamos proyectos que tienen impacto duradero y positivo en las comunidades.',
+    color: 'accent',
+  },
 ]
 
-const cardColors = [
-  'bg-red-100 text-red-600',
-  'bg-blue-100 text-blue-600',
-  'bg-yellow-100 text-yellow-600',
-  'bg-green-100 text-green-600',
-  'bg-purple-100 text-purple-600',
-  'bg-emerald-100 text-emerald-600',
-  'bg-orange-100 text-orange-600',
-  'bg-pink-100 text-pink-600',
-]
-
-function PageSkeleton() {
-  return (
-    <div className="animate-pulse space-y-4">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="h-24 bg-gray-200 rounded-2xl" />
-      ))}
-    </div>
-  )
+function DynamicIcon({ name, size }) {
+  const Icon = (name && ICON_MAP[name]) ? ICON_MAP[name] : Star
+  return <Icon size={size} />
 }
 
 export default function Valores() {
   const [page, setPage] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
 
   useEffect(() => {
-    adminService.getPageContent('valores')
+    adminService
+      .getPageContent('valores')
       .then((data) => setPage(data))
-      .catch(() => setError(null))
+      .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 
-  // Si hay secciones en la BD, usarlas como cards. Si no, mostrar los valores por defecto.
-  const tieneContenidoDB = page?.secciones?.length > 0
+  const hasDbContent = page?.secciones?.length > 0
+
+  const valoresItems = hasDbContent
+    ? page.secciones.map((sec, i) => ({
+        icon: sec.icono || null,
+        title: sec.seccion,
+        desc: sec.contenido,
+        color: ['primary', 'secondary', 'accent'][i % 3],
+        isHtml: true,
+      }))
+    : defaultValores.map((v) => ({ ...v, isHtml: false }))
 
   return (
-    <div className="min-h-screen pt-20">
-      <section className="bg-funac-navy text-white py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl font-bold mb-4"
-          >
-            Nuestros Valores
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="text-blue-200 text-lg"
-          >
-            Los principios que guian cada una de nuestras acciones
-          </motion.p>
+    <>
+      <PageHero
+        image={aboutHero}
+        eyebrow="Nuestros valores"
+        title={
+          <>
+            Los principios que guían{' '}
+            <span className="italic text-funac-yellow">cada acción</span>.
+          </>
+        }
+        subtitle="Valores que no son solo palabras — son la brújula que orienta cada decisión, proyecto y relación que construimos."
+        accent="secondary"
+      />
+
+      <section className="section-padding relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]" />
+        <div className="container mx-auto max-w-6xl relative z-10">
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-48 rounded-2xl bg-muted" />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {valoresItems.map((v, i) => (
+                <motion.div
+                  key={v.title}
+                  className="group relative overflow-hidden rounded-2xl border border-border bg-card p-8 card-lift"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.1 }}
+                >
+                  <div
+                    className={`absolute -top-20 -right-20 h-48 w-48 rounded-full bg-${v.color}/10 blur-3xl transition-all group-hover:bg-${v.color}/30 group-hover:scale-125`}
+                  />
+                  <div
+                    className={`relative inline-flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-${v.color} text-white shadow-glow-${v.color}`}
+                  >
+                    <DynamicIcon name={v.icon} size={24} />
+                  </div>
+                  <h3 className="relative mt-6 text-2xl font-medium tracking-tight text-foreground">
+                    {v.title}
+                  </h3>
+                  {v.isHtml ? (
+                    <div
+                      className="relative mt-3 text-sm leading-relaxed text-muted-foreground"
+                      dangerouslySetInnerHTML={{ __html: v.desc }}
+                    />
+                  ) : (
+                    <p className="relative mt-3 text-sm leading-relaxed text-muted-foreground">
+                      {v.desc}
+                    </p>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
-
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {loading && <PageSkeleton />}
-        {error && <Alert type="error" message={error} />}
-
-        {!loading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tieneContenidoDB
-              ? page.secciones.map((sec, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.08 }}
-                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-                  >
-                    <div className="inline-flex p-3 rounded-lg bg-funac-navy/10 text-funac-navy mb-4">
-                      <DynamicIcon name={sec.icono || null} size={22} DefaultIcon={Star} />
-                    </div>
-                    <h3 className="font-bold text-gray-900 text-lg mb-2">{sec.seccion}</h3>
-                    <div
-                      className="text-gray-500 text-sm leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: sec.contenido }}
-                    />
-                  </motion.div>
-                ))
-              : defaultValores.map((valor, i) => (
-                  <motion.div
-                    key={valor.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.08 }}
-                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-                  >
-                    <div className="inline-flex p-3 rounded-lg bg-funac-navy/10 text-funac-navy mb-4">
-                      <valor.icon size={22} />
-                    </div>
-                    <h3 className="font-bold text-gray-900 text-lg mb-2">{valor.title}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{valor.description}</p>
-                  </motion.div>
-                ))
-            }
-          </div>
-        )}
-      </section>
-    </div>
+    </>
   )
 }

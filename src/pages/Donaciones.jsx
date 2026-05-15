@@ -4,24 +4,31 @@ import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import toast from 'react-hot-toast'
-import { RefreshCw, ExternalLink } from 'lucide-react'
-import Input from '../components/ui/Input'
-import Button from '../components/ui/Button'
+import {
+  Heart,
+  CreditCard,
+  Building2,
+  Banknote,
+  ArrowRight,
+  Sparkles,
+  RefreshCw,
+} from 'lucide-react'
 import donationService from '../services/donationService'
 import { formatCurrency } from '../utils/formatters'
+import donationsHero from '@/assets/donations-hero.jpg'
 
-const MONTOS = [10000, 20000, 50000, 100000]
+const AMOUNTS = [50000, 100000, 200000, 500000]
 
 const schema = yup.object({
-  nombre_completo: yup.string().required('Nombre requerido').min(3),
-  email: yup.string().required('Email requerido').email('Email invalido'),
+  nombre_completo: yup.string().required('Nombre requerido').min(3, 'Mínimo 3 caracteres'),
+  email: yup.string().required('Email requerido').email('Email inválido'),
   telefono: yup.string().optional(),
-  cedula: yup.string().required('Cedula requerida'),
+  cedula: yup.string().required('Cédula requerida'),
 })
 
 export default function Donaciones() {
-  const [monto, setMonto] = useState(20000)
-  const [montoCustom, setMontoCustom] = useState('')
+  const [selected, setSelected] = useState(100000)
+  const [custom, setCustom] = useState('')
   const [useCustom, setUseCustom] = useState(false)
   const [recurrente, setRecurrente] = useState(false)
   const [mostrarEnMuro, setMostrarEnMuro] = useState(true)
@@ -33,9 +40,9 @@ export default function Donaciones() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) })
 
-  const montoFinal = useCustom ? Number(montoCustom) : monto
+  const montoFinal = useCustom ? Number(custom) : selected
 
-  // Cargar el script de ePayco una sola vez al montar el componente
+  // Cargar script de ePayco
   useEffect(() => {
     if (document.getElementById('epayco-script')) return
     const script = document.createElement('script')
@@ -47,18 +54,16 @@ export default function Donaciones() {
 
   const onSubmit = async (data) => {
     if (!montoFinal || montoFinal < 1000) {
-      toast.error('El monto minimo es de $1.000')
+      toast.error('El monto mínimo es de $1.000')
       return
     }
-
     if (!window.ePayco) {
-      toast.error('El portal de pagos aun esta cargando. Intenta en un momento.')
+      toast.error('El portal de pagos aún está cargando. Intente en un momento.')
       return
     }
 
     setLoading(true)
     try {
-      // 1. Registrar la donacion en el backend y obtener la referencia
       const result = await donationService.initDonation({
         ...data,
         monto: montoFinal,
@@ -67,17 +72,16 @@ export default function Donaciones() {
       })
 
       const referencia = result.data?.referencia_epayco
-      if (!referencia) throw new Error('No se recibio referencia del servidor')
+      if (!referencia) throw new Error('No se recibió referencia del servidor')
 
-      // 2. Abrir el checkout de ePayco
       const handler = window.ePayco.checkout.configure({
         key: import.meta.env.VITE_EPAYCO_PUBLIC_KEY,
         test: import.meta.env.VITE_EPAYCO_TEST_MODE === 'true',
       })
 
       handler.open({
-        name: 'FUNAC - Donacion',
-        description: `Donacion a FUNAC`,
+        name: 'FUNAC - Donación',
+        description: 'Donación a FUNAC',
         invoice: referencia,
         currency: 'cop',
         amount: String(montoFinal),
@@ -96,7 +100,10 @@ export default function Donaciones() {
         extra1: referencia,
       })
     } catch (err) {
-      const msg = err?.response?.data?.error || err?.message || 'Error al procesar la donacion. Intenta nuevamente.'
+      const msg =
+        err?.response?.data?.error ||
+        err?.message ||
+        'Error al procesar la donación. Intente nuevamente.'
       toast.error(msg)
     } finally {
       setLoading(false)
@@ -104,150 +111,296 @@ export default function Donaciones() {
   }
 
   return (
-    <div className="min-h-screen pt-20">
-      <section className="bg-funac-orange text-white py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl sm:text-5xl font-bold mb-4"
-          >
-            Haz una Donacion
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="text-orange-100 text-lg"
-          >
-            Tu aporte transforma vidas. Cada peso cuenta.
-          </motion.p>
+    <>
+      {/* HERO split with image */}
+      <section className="relative overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[80vh]">
+          <div className="relative bg-gradient-accent flex items-center px-6 py-20 lg:px-16 overflow-hidden">
+            <div className="absolute inset-0 bg-grid opacity-10" />
+            <div className="blob top-10 -left-20 h-80 w-80 bg-funac-yellow/40 animate-blob-float" />
+            <div className="relative z-10 max-w-xl text-white">
+              <motion.p
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur px-4 py-1.5 text-xs font-medium uppercase tracking-widest"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Sparkles size={14} />
+                Su aporte cambia vidas
+              </motion.p>
+              <motion.h1
+                className="mt-6 text-5xl font-medium tracking-tight md:text-7xl"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+              >
+                Done. <span className="italic">Transforme.</span>
+              </motion.h1>
+              <motion.p
+                className="mt-6 text-lg text-white/90"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+              >
+                Cada aporte se administra con total transparencia y se traduce en oportunidades
+                reales para quienes más lo necesitan.
+              </motion.p>
+            </div>
+          </div>
+
+          <div className="relative overflow-hidden min-h-[40vh]">
+            <img
+              src={donationsHero}
+              alt="Semilla en manos"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-l from-transparent to-accent/20" />
+          </div>
         </div>
       </section>
 
-      <section className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          {/* Monto */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Selecciona el monto</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-              {MONTOS.map((m) => (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => { setMonto(m); setUseCustom(false); setMontoCustom('') }}
-                  className={`py-3 rounded-xl font-semibold text-sm border-2 transition-all ${
-                    !useCustom && monto === m
-                      ? 'border-funac-orange bg-funac-orange text-white'
-                      : 'border-gray-200 text-gray-700 hover:border-funac-orange'
-                  }`}
-                >
-                  {formatCurrency(m)}
-                </button>
-              ))}
-            </div>
+      {/* Donation form */}
+      <section className="section-padding bg-gradient-hero">
+        <div className="container mx-auto max-w-3xl">
+          <motion.form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="relative gradient-border p-8 md:p-10 shadow-elevated space-y-8"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            {/* Monto */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Otro valor</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium text-sm">$</span>
+              <p className="text-xs uppercase tracking-widest text-accent">Paso 1</p>
+              <h2 className="mt-2 text-3xl font-medium text-foreground">Seleccione un monto</h2>
+
+              <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
+                {AMOUNTS.map((a) => (
+                  <button
+                    key={a}
+                    type="button"
+                    onClick={() => {
+                      setSelected(a)
+                      setUseCustom(false)
+                      setCustom('')
+                    }}
+                    className={`relative overflow-hidden rounded-xl border-2 px-4 py-4 text-sm font-semibold transition-all ${
+                      !useCustom && selected === a
+                        ? 'border-accent bg-gradient-accent text-white shadow-glow-accent scale-[1.03]'
+                        : 'border-border bg-card text-foreground hover:border-accent/50 hover:-translate-y-0.5'
+                    }`}
+                  >
+                    <span className="font-mono-nums">{formatCurrency(a)}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-4">
                 <input
                   type="number"
                   min="1000"
-                  placeholder="Ingresa el monto"
-                  value={montoCustom}
+                  placeholder="Otro monto (COP)"
+                  value={custom}
                   onChange={(e) => {
-                    setMontoCustom(e.target.value)
+                    setCustom(e.target.value)
                     setUseCustom(true)
                   }}
-                  className={`w-full pl-8 pr-4 py-2.5 rounded-xl border-2 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-funac-orange ${
-                    useCustom ? 'border-funac-orange' : 'border-gray-200'
-                  }`}
+                  className="w-full rounded-xl border-2 border-border bg-card px-5 py-4 font-mono-nums text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all"
                 />
               </div>
+
+              {/* Recurrente */}
+              <button
+                type="button"
+                onClick={() => setRecurrente(!recurrente)}
+                className={`mt-4 flex items-center gap-3 w-full p-3 rounded-xl border-2 transition-all text-sm font-medium ${
+                  recurrente
+                    ? 'border-accent bg-accent text-white'
+                    : 'border-border text-muted-foreground hover:border-accent/50'
+                }`}
+              >
+                <RefreshCw size={16} />
+                Donación recurrente mensual
+                {recurrente && (
+                  <span className="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">
+                    Activa
+                  </span>
+                )}
+              </button>
             </div>
 
-            {/* Recurrente toggle */}
-            <button
-              type="button"
-              onClick={() => setRecurrente(!recurrente)}
-              className={`mt-4 flex items-center gap-3 w-full p-3 rounded-xl border-2 transition-all text-sm font-medium ${
-                recurrente ? 'border-funac-navy bg-funac-navy text-white' : 'border-gray-200 text-gray-600'
-              }`}
-            >
-              <RefreshCw size={16} />
-              Donacion recurrente mensual
-              {recurrente && <span className="ml-auto text-xs bg-white/20 px-2 py-0.5 rounded-full">Activa</span>}
-            </button>
-          </div>
+            {/* Datos personales */}
+            <div>
+              <p className="text-xs uppercase tracking-widest text-accent">Paso 2</p>
+              <h2 className="mt-2 text-3xl font-medium text-foreground">Sus datos</h2>
 
-          {/* Datos personales */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Tus datos</h2>
-            <div className="space-y-4">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Input
-                  label="Nombre completo"
-                  error={errors.nombre_completo?.message}
-                  {...register('nombre_completo')}
-                />
-                <Input
-                  label="Cedula"
-                  error={errors.cedula?.message}
-                  {...register('cedula')}
-                />
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Input
-                  label="Email"
-                  type="email"
-                  error={errors.email?.message}
-                  {...register('email')}
-                />
-                <Input
-                  label="Telefono (opcional)"
-                  type="tel"
-                  {...register('telefono')}
-                />
+              <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    Nombre completo
+                  </label>
+                  <input
+                    {...register('nombre_completo')}
+                    type="text"
+                    placeholder="Juan Pérez"
+                    className="w-full rounded-xl border-2 border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all"
+                  />
+                  {errors.nombre_completo && (
+                    <p className="mt-1 text-xs text-destructive">
+                      {errors.nombre_completo.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">Cédula</label>
+                  <input
+                    {...register('cedula')}
+                    type="text"
+                    placeholder="1.000.000.000"
+                    className="w-full rounded-xl border-2 border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all"
+                  />
+                  {errors.cedula && (
+                    <p className="mt-1 text-xs text-destructive">{errors.cedula.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    Correo electrónico
+                  </label>
+                  <input
+                    {...register('email')}
+                    type="email"
+                    placeholder="correo@ejemplo.com"
+                    className="w-full rounded-xl border-2 border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all"
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-xs text-destructive">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">
+                    Teléfono (opcional)
+                  </label>
+                  <input
+                    {...register('telefono')}
+                    type="tel"
+                    placeholder="+57 300 000 0000"
+                    className="w-full rounded-xl border-2 border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all"
+                  />
+                </div>
               </div>
 
-              <label className="flex items-center gap-3 cursor-pointer">
+              <label className="mt-4 flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={mostrarEnMuro}
                   onChange={(e) => setMostrarEnMuro(e.target.checked)}
-                  className="w-4 h-4 text-funac-orange rounded focus:ring-funac-orange"
+                  className="w-4 h-4 rounded accent-accent"
                 />
-                <span className="text-sm text-gray-600">Aparecer en el muro de donantes</span>
+                <span className="text-sm text-muted-foreground">
+                  Aparecer en el muro de donantes
+                </span>
               </label>
             </div>
-          </div>
 
-          {/* Resumen */}
-          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+            {/* Resumen + CTA */}
             <div>
-              <p className="text-sm text-gray-600">Total a donar</p>
-              <p className="text-2xl font-black text-funac-orange">
-                {montoFinal ? formatCurrency(montoFinal) : '$ 0'}
+              <div className="mb-4 flex items-center justify-between rounded-xl border border-border bg-muted/60 px-5 py-4">
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground">
+                    Total a donar
+                  </p>
+                  <p className="font-mono-nums text-2xl font-semibold text-accent">
+                    {montoFinal ? formatCurrency(montoFinal) : '$ 0'}
+                  </p>
+                  {recurrente && (
+                    <p className="text-xs text-muted-foreground mt-0.5">Se cobrará mensualmente</p>
+                  )}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-accent group w-full text-base py-4 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                <Heart
+                  size={20}
+                  className="transition-transform group-hover:scale-110"
+                />
+                {loading ? 'Procesando...' : 'Donar ahora'}
+                <ArrowRight
+                  size={18}
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              </button>
+
+              <p className="mt-4 text-center text-xs text-muted-foreground">
+                Transacción 100% segura · Procesado por ePayco · Recibo deducible disponible
               </p>
-              {recurrente && <p className="text-xs text-gray-500">Se cobrara mensualmente</p>}
             </div>
-          </div>
-
-          <Button
-            type="submit"
-            size="lg"
-            loading={loading}
-            icon={ExternalLink}
-            className="w-full"
-          >
-            Donar Ahora
-          </Button>
-
-          <p className="text-center text-xs text-gray-400 mt-3">
-            Pago seguro procesado por ePayco. Tu informacion esta protegida.
-          </p>
-        </form>
+          </motion.form>
+        </div>
       </section>
-    </div>
+
+      {/* Otros métodos */}
+      <section className="section-padding bg-foreground text-background relative overflow-hidden">
+        <div className="absolute inset-0 bg-dots opacity-10" />
+        <div className="container mx-auto max-w-5xl relative z-10">
+          <div className="text-center">
+            <p className="text-xs uppercase tracking-widest text-background/60">Más maneras</p>
+            <h2 className="mt-2 text-4xl font-medium tracking-tight md:text-5xl">
+              Otros métodos de donación
+            </h2>
+          </div>
+          <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-3">
+            {[
+              {
+                icon: CreditCard,
+                title: 'Transferencia Bancaria',
+                desc: 'Banco Nacional\nCuenta: 1234-5678-90\nNIT: 900.123.456-7',
+                color: 'primary',
+              },
+              {
+                icon: Building2,
+                title: 'Presencial',
+                desc: 'Calle 72 #10-25, Of. 301\nBogotá D.C.\nLun–Vie 8am–5pm',
+                color: 'secondary',
+              },
+              {
+                icon: Banknote,
+                title: 'Efectivo',
+                desc: 'Puntos autorizados de\nrecaudo en las principales\nciudades del país',
+                color: 'accent',
+              },
+            ].map((m, i) => (
+              <motion.div
+                key={m.title}
+                className="glass-dark rounded-2xl p-8 card-lift"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
+              >
+                <div
+                  className={`inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-${m.color} shadow-glow-${m.color}`}
+                >
+                  <m.icon size={22} className="text-white" />
+                </div>
+                <h3 className="mt-5 text-lg font-semibold">{m.title}</h3>
+                <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-background/70">
+                  {m.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   )
 }
