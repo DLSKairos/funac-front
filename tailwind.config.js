@@ -60,10 +60,9 @@ export default {
         success: "hsl(var(--success))",
         "funac-red": "hsl(var(--funac-red))",
         "funac-yellow": "hsl(var(--funac-yellow))",
-        // Colores anteriores mantenidos para retrocompatibilidad
-        "funac-orange": "#C05425",
-        "funac-navy": "#1E3A8A",
-        "funac-green": "#10B981",
+        "funac-orange": "#FF6E3C",
+        "funac-navy": "#404272",
+        "funac-green": "#2BAEB3",
         pending: {
           bg: "hsl(var(--pending-bg))",
           text: "hsl(var(--pending-text))",
@@ -94,8 +93,8 @@ export default {
         sm: "calc(0.5rem - 4px)",
       },
       fontFamily: {
-        sans: ["Space Grotesk", "system-ui", "-apple-system", "sans-serif"],
-        display: ["Instrument Serif", "serif"],
+        sans: ["Playfair Display", "Georgia", "serif"],
+        display: ["Playfair Display", "Georgia", "serif"],
         mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       keyframes: {

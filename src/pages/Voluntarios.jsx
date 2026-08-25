@@ -78,8 +78,16 @@ export default function Voluntarios() {
       if (file && volunteerId) {
         try {
           await volunteerService.uploadCV(volunteerId, file)
-        } catch {
-          // El registro fue exitoso aunque el CV no se haya subido
+        } catch (cvErr) {
+          // El registro principal sí fue exitoso, pero la hoja de vida no se pudo subir.
+          // Se lo informamos honestamente al usuario en vez de mostrar éxito total.
+          const cvMsg =
+            cvErr?.response?.data?.message ||
+            'Tu postulación se guardó, pero no pudimos subir tu hoja de vida. Intenta subirla de nuevo o escríbenos.'
+          toast.error(cvMsg, { duration: 6000 })
+          reset()
+          setFile(null)
+          return
         }
       }
       setSuccess(true)

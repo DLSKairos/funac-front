@@ -189,7 +189,7 @@ export default function QuienesSomos() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.06 }}
-                  className="rounded-2xl border border-border bg-card p-5 card-lift flex gap-3"
+                  className={`rounded-2xl border border-border p-5 card-lift flex gap-3 ${['card-gradient-green','card-gradient-lime','card-gradient-orange','card-gradient-green'][i%4]}`}
                 >
                   <CheckCircle size={18} className="text-accent flex-shrink-0 mt-0.5" />
                   <p className="text-sm leading-relaxed text-muted-foreground">{obj}</p>
@@ -214,7 +214,7 @@ export default function QuienesSomos() {
             {staticValues.map((v, i) => (
               <motion.div
                 key={v.title}
-                className="group relative overflow-hidden rounded-2xl border border-border bg-card p-8 card-lift"
+                className={`group relative overflow-hidden rounded-2xl border border-border p-8 card-lift ${['card-gradient-green','card-gradient-orange','card-gradient-lime'][i%3]}`}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

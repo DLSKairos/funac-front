@@ -5,40 +5,61 @@ import Button from '../components/ui/Button'
 
 export default function DonacionExito() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-green-50 to-emerald-50">
+    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-hero px-4 py-20">
+      <div className="absolute inset-0 bg-dots opacity-10" />
+      <div className="blob top-10 left-10 h-80 w-80 bg-accent/30 animate-blob-float" />
+      <div
+        className="blob bottom-10 right-10 h-72 w-72 bg-secondary/30 animate-blob-float"
+        style={{ animationDelay: '4s' }}
+      />
+
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center max-w-md"
+        className="relative z-10 w-full max-w-md gradient-border p-8 text-center shadow-elevated md:p-10"
       >
         <div className="relative inline-block mb-6">
-          <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle size={48} className="text-funac-green" />
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-accent shadow-glow-accent">
+            <CheckCircle size={48} className="text-white" />
           </div>
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2 }}
-            className="absolute -top-1 -right-1 w-8 h-8 bg-funac-orange rounded-full flex items-center justify-center"
+            className="absolute -top-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-secondary shadow-glow-secondary"
           >
-            <Heart size={16} className="text-white fill-white" />
+            <Heart size={16} className="fill-white text-white" />
           </motion.div>
         </div>
 
-        <h1 className="text-4xl font-black text-gray-900 mb-4">Gracias por tu donacion!</h1>
-        <p className="text-gray-600 mb-4 leading-relaxed">
-          Tu generosidad hace posible que sigamos transformando vidas. Recibiras un comprobante en tu correo electronico.
+        <p className="text-xs uppercase tracking-widest text-accent">Donación confirmada</p>
+        <h1 className="mt-2 text-4xl font-medium tracking-tight text-foreground">
+          ¡Gracias por tu donación!
+        </h1>
+        <p className="mt-4 leading-relaxed text-muted-foreground">
+          Tu generosidad hace posible que sigamos transformando vidas. Recibirás un comprobante en
+          tu correo electrónico.
         </p>
-        <div className="bg-white rounded-2xl shadow-sm border border-green-100 p-4 mb-8">
-          <p className="text-sm text-gray-600">Tu donacion contribuye a:</p>
-          <ul className="mt-2 space-y-1 text-sm text-funac-green font-medium">
-            <li>Programas educativos</li>
-            <li>Atencion a familias vulnerables</li>
-            <li>Proyectos de construccion comunitaria</li>
+
+        <div className="mt-8 rounded-2xl border border-border bg-card p-5 text-left">
+          <p className="text-sm text-muted-foreground">Tu donación contribuye a:</p>
+          <ul className="mt-3 space-y-2 text-sm font-medium text-accent">
+            <li className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              Programas educativos
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              Atención a familias vulnerables
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              Proyectos de construcción comunitaria
+            </li>
           </ul>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Link to="/">
             <Button variant="primary">Volver al inicio</Button>
           </Link>
@@ -47,6 +68,6 @@ export default function DonacionExito() {
           </Link>
         </div>
       </motion.div>
-    </div>
+    </section>
   )
 }

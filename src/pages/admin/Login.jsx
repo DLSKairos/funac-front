@@ -35,7 +35,7 @@ export default function Login() {
       toast.success('Bienvenido al panel de administracion')
       navigate('/admin', { replace: true })
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Credenciales incorrectas'
+      const msg = err?.response?.data?.error || 'Credenciales incorrectas'
       toast.error(msg)
     }
   }

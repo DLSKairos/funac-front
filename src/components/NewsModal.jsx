@@ -26,6 +26,20 @@ const NewsModal = () => {
     setOpen(false)
   }
 
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') close()
+    }
+    if (open) {
+      document.addEventListener('keydown', handleEsc)
+      document.body.style.overflow = 'hidden'
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEsc)
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
   if (!config) return null
 
   const isExternal =

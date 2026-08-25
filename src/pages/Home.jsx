@@ -87,15 +87,7 @@ export default function Home() {
             vidas.
           </motion.h1>
 
-          <motion.p
-            className="mt-8 max-w-xl text-lg leading-relaxed text-white/90"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.15 }}
-          >
-            Somos una fundación comprometida con el desarrollo social sostenible. Cada
-            acción cuenta, cada vida importa.
-          </motion.p>
+        
 
           <motion.div
             className="mt-10 flex flex-wrap gap-4"
@@ -135,7 +127,7 @@ export default function Home() {
         <div className="container mx-auto max-w-6xl relative z-10">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             <motion.div
-              className="gradient-border p-10 card-lift"
+              className="card-gradient-green rounded-2xl border border-border p-10 card-lift"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -156,7 +148,7 @@ export default function Home() {
             </motion.div>
 
             <motion.div
-              className="gradient-border p-10 card-lift md:mt-16"
+              className="card-gradient-orange rounded-2xl border border-border p-10 card-lift md:mt-16"
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -243,7 +235,7 @@ export default function Home() {
             {licitaciones.map((doc, i) => (
               <motion.div
                 key={doc.title}
-                className="group relative flex items-start gap-4 rounded-2xl border border-border bg-card p-6 card-lift overflow-hidden"
+                className={`group relative flex items-start gap-4 rounded-2xl border border-border p-6 card-lift overflow-hidden ${['card-gradient-orange','card-gradient-green','card-gradient-lime'][i%3]}`}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

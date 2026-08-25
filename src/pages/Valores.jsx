@@ -108,7 +108,7 @@ export default function Valores() {
               {valoresItems.map((v, i) => (
                 <motion.div
                   key={v.title}
-                  className="group relative overflow-hidden rounded-2xl border border-border bg-card p-8 card-lift"
+                  className={`group relative overflow-hidden rounded-2xl border border-border p-8 card-lift ${['card-gradient-green','card-gradient-orange','card-gradient-lime'][i%3]}`}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}

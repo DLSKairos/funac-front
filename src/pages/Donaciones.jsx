@@ -181,6 +181,7 @@ export default function Donaciones() {
                   <button
                     key={a}
                     type="button"
+                    aria-pressed={!useCustom && selected === a}
                     onClick={() => {
                       setSelected(a)
                       setUseCustom(false)
