@@ -4,7 +4,7 @@ const variantClasses = {
   primary:
     'bg-funac-orange text-white hover:bg-[#A8461F] shadow-sm',
   secondary:
-    'bg-funac-navy text-white hover:bg-blue-900 shadow-md hover:shadow-lg',
+    'bg-funac-navy text-white hover:brightness-90 shadow-md hover:shadow-lg',
   outline:
     'border-2 border-funac-navy text-funac-navy bg-transparent hover:bg-funac-navy hover:text-white',
   ghost:

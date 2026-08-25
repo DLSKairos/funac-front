@@ -7,32 +7,33 @@
 @layer base {
   :root {
     /* ─── Brand palette ───────────────────────────────────────────
-       #404272  →  primary   (azul oscuro)   238° 28% 35%
-       #FF6E3C  →  secondary (naranja)        15° 100% 62%
-       #2BAEB3  →  accent    (turquesa)      182° 61%  44%
-       #FFD74B  →  yellow    (dorado cálido)   45° 100% 65%
+       #1D3C63  →  primary      (azul marino, logo)   213° 55% 25%
+       #5187B6  →  primary-glow (azul medio, logo)    208° 41% 52%
+       #FF6E3C  →  secondary (naranja)                 15° 100% 62%
+       #2BAEB3  →  accent    (turquesa)               182° 61%  44%
+       #FFD74B  →  yellow    (dorado cálido)            45° 100% 65%
     ─────────────────────────────────────────────────────────────── */
-    --background: 238 20% 97%;
-    --foreground: 238 30% 12%;
+    --background: 213 20% 97%;
+    --foreground: 213 30% 12%;
 
-    --card: 238 20% 96%;
-    --card-foreground: 238 30% 12%;
+    --card: 213 20% 96%;
+    --card-foreground: 213 30% 12%;
 
-    --popover: 238 20% 97%;
-    --popover-foreground: 238 30% 12%;
+    --popover: 213 20% 97%;
+    --popover-foreground: 213 30% 12%;
 
-    --primary: 238 28% 35%;
+    --primary: 213 55% 25%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 238 35% 55%;
+    --primary-glow: 208 41% 52%;
 
     --secondary: 15 100% 62%;
     --secondary-foreground: 0 0% 100%;
     --secondary-glow: 15 100% 72%;
 
-    --muted: 238 15% 93%;
+    --muted: 213 15% 93%;
     /* L reducida de 50% a 45% para cumplir WCAG AA (4.5:1) sobre --card y --muted,
        donde el valor anterior quedaba en 4.43:1 y 4.12:1 respectivamente. */
-    --muted-foreground: 238 15% 45%;
+    --muted-foreground: 213 15% 45%;
 
     --accent: 182 61% 44%;
     --accent-foreground: 0 0% 100%;
@@ -41,27 +42,27 @@
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 238 20% 87%;
-    --input: 238 20% 87%;
-    --ring: 238 28% 35%;
+    --border: 213 20% 87%;
+    --input: 213 20% 87%;
+    --ring: 213 55% 25%;
 
     --funac-red: 350 87% 43%;
     --funac-yellow: 45 100% 65%;
 
     --radius: 0.875rem;
 
-    --surface-alt: 238 15% 94%;
+    --surface-alt: 213 15% 94%;
     --success: 182 61% 44%;
     --warning-bg: 15 90% 96%;
     --warning-text: 15 90% 45%;
-    --info-bg: 238 25% 94%;
-    --info-text: 238 35% 35%;
+    --info-bg: 213 25% 94%;
+    --info-text: 213 35% 35%;
     --pending-bg: 153 60% 94%;
     --pending-text: 153 100% 25%;
-    --process-bg: 238 25% 94%;
-    --process-text: 238 35% 35%;
-    --cancelled-bg: 238 10% 93%;
-    --cancelled-text: 238 15% 50%;
+    --process-bg: 213 25% 94%;
+    --process-text: 213 35% 35%;
+    --cancelled-bg: 213 10% 93%;
+    --cancelled-text: 213 15% 50%;
 
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
     --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--secondary-glow)) 100%);
@@ -80,16 +81,16 @@
     --shadow-glow-primary: 0 0 40px hsl(var(--primary-glow) / 0.45), 0 0 80px hsl(var(--primary) / 0.25);
     --shadow-glow-secondary: 0 0 40px hsl(var(--secondary-glow) / 0.45), 0 0 80px hsl(var(--secondary) / 0.25);
     --shadow-glow-accent: 0 0 40px hsl(var(--accent-glow) / 0.45), 0 0 80px hsl(var(--accent) / 0.25);
-    --shadow-elevated: 0 30px 60px -20px hsl(238 30% 12% / 0.18);
+    --shadow-elevated: 0 30px 60px -20px hsl(213 30% 12% / 0.18);
 
-    --sidebar-background: 238 25% 98%;
-    --sidebar-foreground: 238 30% 20%;
-    --sidebar-primary: 238 28% 35%;
+    --sidebar-background: 213 25% 98%;
+    --sidebar-foreground: 213 30% 20%;
+    --sidebar-primary: 213 55% 25%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 238 20% 93%;
-    --sidebar-accent-foreground: 238 30% 20%;
-    --sidebar-border: 238 20% 87%;
-    --sidebar-ring: 238 35% 55%;
+    --sidebar-accent: 213 20% 93%;
+    --sidebar-accent-foreground: 213 30% 20%;
+    --sidebar-border: 213 20% 87%;
+    --sidebar-ring: 208 41% 52%;
   }
 }
 
@@ -166,7 +167,7 @@
     border: 1px solid hsl(var(--border) / 0.5);
   }
   .glass-dark {
-    background: hsl(238 28% 35% / 0.55);
+    background: hsl(var(--primary) / 0.55);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid hsl(0 0% 100% / 0.1);
@@ -368,7 +369,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, hsl(238 28% 35% / 0.3) 0%, hsl(238 28% 35% / 0.75) 100%);
+    background: linear-gradient(180deg, hsl(var(--primary) / 0.3) 0%, hsl(var(--primary) / 0.75) 100%);
   }
 
   /* Floating animation */

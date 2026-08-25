@@ -357,7 +357,7 @@ function CarouselTab() {
         <h2 className="text-lg font-bold text-gray-900">Carrusel de imagenes</h2>
         <button
           onClick={() => inputRef.current?.click()}
-          className="flex items-center gap-2 px-4 py-2 bg-funac-navy text-white rounded-lg text-sm font-medium hover:bg-blue-900 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-funac-navy text-white rounded-lg text-sm font-medium hover:brightness-90 transition-colors"
         >
           <Upload size={15} />
           Subir imagenes

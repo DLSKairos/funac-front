@@ -160,7 +160,7 @@ export default function VoluntariosPage() {
                     <td className="px-4 py-3">
                       <button
                         onClick={() => openDetail(v.id)}
-                        className="p-1.5 text-funac-navy hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-1.5 text-primary hover:bg-primary/5 rounded-lg transition-colors"
                         title="Ver detalles"
                       >
                         <Eye size={15} />
@@ -233,7 +233,7 @@ export default function VoluntariosPage() {
                 <p className="text-xs text-gray-400 font-medium mb-2">Areas de interes</p>
                 <div className="flex flex-wrap gap-2">
                   {selected.areas_interes.map((area) => (
-                    <span key={area} className="px-2.5 py-1 bg-blue-100 text-funac-navy rounded-lg text-xs font-medium">
+                    <span key={area} className="px-2.5 py-1 bg-primary/10 text-primary rounded-lg text-xs font-medium">
                       {AREAS_LABEL[area] || area}
                     </span>
                   ))}

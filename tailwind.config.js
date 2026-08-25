@@ -61,7 +61,7 @@ export default {
         "funac-red": "hsl(var(--funac-red))",
         "funac-yellow": "hsl(var(--funac-yellow))",
         "funac-orange": "#FF6E3C",
-        "funac-navy": "#404272",
+        "funac-navy": "#1D3C63",
         "funac-green": "#2BAEB3",
         pending: {
           bg: "hsl(var(--pending-bg))",

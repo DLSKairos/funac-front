@@ -178,7 +178,7 @@ export default function DonacionesPage() {
                       <Badge variant={d.estado || 'pendiente'} />
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${d.recurrente ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'}`}>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${d.recurrente ? 'bg-primary/10 text-primary' : 'bg-gray-100 text-gray-500'}`}>
                         {d.recurrente ? 'Si' : 'No'}
                       </span>
                     </td>
@@ -187,7 +187,7 @@ export default function DonacionesPage() {
                       <div className="flex gap-1">
                         <button
                           onClick={() => openDetail(d.id)}
-                          className="p-1.5 text-funac-navy hover:bg-blue-50 rounded-lg"
+                          className="p-1.5 text-primary hover:bg-primary/5 rounded-lg"
                           title="Ver detalles"
                         >
                           <Eye size={15} />

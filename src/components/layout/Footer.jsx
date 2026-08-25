@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Instagram, Facebook, Twitter, Music2, Mail, MapPin } from 'lucide-react'
-import funacLogo from '@/assets/funac-logo.jpg'
+import funacLogo from '@/assets/funac-logo.png'
 
 const Footer = () => {
   return (
@@ -15,19 +15,11 @@ const Footer = () => {
       <div className="relative container mx-auto grid grid-cols-1 gap-12 px-6 py-20 md:grid-cols-12 md:gap-8">
         {/* Brand */}
         <div className="md:col-span-5">
-          <div className="flex items-center gap-3">
-            <img
-              src={funacLogo}
-              alt="FUNAC"
-              className="h-12 w-12 rounded-lg object-cover ring-2 ring-white/20"
-            />
-            <div>
-              <p className="font-display text-2xl">FUNAC</p>
-              <p className="text-[10px] uppercase tracking-widest text-background/60">
-                Ayudando a Construir
-              </p>
-            </div>
-          </div>
+          <img
+            src={funacLogo}
+            alt="FUNAC"
+            className="h-12 w-auto object-contain"
+          />
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-background/70">
             Construyendo el futuro con transparencia, compromiso y resultados medibles desde 2018.
           </p>

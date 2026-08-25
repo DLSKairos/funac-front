@@ -12,6 +12,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
+import funacLogo from '@/assets/funac-logo.png'
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -29,16 +30,8 @@ export default function AdminSidebar() {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
-            <span className="text-white font-black text-sm">F</span>
-          </div>
-          <span className="font-black text-lg">
-            <span className="text-funac-orange">FUN</span>
-            <span className="text-white">AC</span>
-          </span>
-        </div>
-        <p className="text-xs text-blue-300 mt-1">Panel de Administracion</p>
+        <img src={funacLogo} alt="FUNAC" className="h-9 w-auto object-contain" />
+        <p className="text-xs text-white/60 mt-2">Panel de Administracion</p>
       </div>
 
       {/* Nav */}
@@ -53,7 +46,7 @@ export default function AdminSidebar() {
               `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 isActive
                   ? 'bg-white/20 text-white'
-                  : 'text-blue-200 hover:bg-white/10 hover:text-white'
+                  : 'text-white/70 hover:bg-white/10 hover:text-white'
               }`
             }
           >
@@ -76,12 +69,12 @@ export default function AdminSidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-white truncate">{user?.username || 'Admin'}</p>
-            <p className="text-xs text-blue-300">Administrador</p>
+            <p className="text-xs text-white/60">Administrador</p>
           </div>
         </div>
         <button
           onClick={logout}
-          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-blue-200 hover:bg-red-500/20 hover:text-red-300 transition-all"
+          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-white/70 hover:bg-red-500/20 hover:text-red-300 transition-all"
         >
           <LogOut size={18} />
           Cerrar Sesion

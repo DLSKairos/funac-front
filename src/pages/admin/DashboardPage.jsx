@@ -51,7 +51,7 @@ function SimpleBarChart({ data }) {
               {formatCurrency(val, 'COP').replace('$', '').trim().replace('.000', 'k')}
             </span>
             <div
-              className="w-full rounded-t-lg bg-gradient-to-t from-funac-navy to-blue-500 transition-all duration-700"
+              className="w-full rounded-t-lg bg-gradient-to-t from-primary to-primary-glow transition-all duration-700"
               style={{ height: `${height}%` }}
               title={`${item.mes || item.label}: ${formatCurrency(val)}`}
             />
@@ -107,7 +107,7 @@ export default function DashboardPage() {
       title: 'Voluntarios',
       value: stats?.total_voluntarios ?? '—',
       subtitle: 'Registrados',
-      color: 'bg-blue-100 text-funac-navy',
+      color: 'bg-primary/10 text-primary',
     },
     {
       icon: UserCheck,

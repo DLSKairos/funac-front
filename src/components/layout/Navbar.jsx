@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Menu, X, Sparkles } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import funacLogo from '@/assets/funac-logo.jpg'
+import funacLogo from '@/assets/funac-logo.png'
 
 const links = [
   { to: '/', label: 'Inicio' },
@@ -26,24 +26,18 @@ const Navbar = () => {
   return (
     <nav
       className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled ? 'glass shadow-card' : 'bg-transparent'
+        scrolled
+          ? 'bg-white/70 backdrop-blur-[20px] backdrop-saturate-[180%] border-b border-border/50 shadow-card'
+          : 'bg-transparent'
       }`}
     >
-      <div className="container mx-auto flex items-center justify-between px-6 py-3">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="relative">
-            <img
-              src={funacLogo}
-              alt="FUNAC"
-              className="h-10 w-10 rounded-lg object-cover ring-2 ring-border transition-all group-hover:ring-primary"
-            />
-          </div>
-          <div className="leading-tight">
-            <span className="block font-display text-xl tracking-tight text-foreground">FUNAC</span>
-            <span className="hidden sm:block text-[10px] uppercase tracking-widest text-muted-foreground">
-              Ayudando a Construir
-            </span>
-          </div>
+      <div className="container mx-auto flex h-16 items-center justify-between px-6">
+        <Link to="/" className="group flex h-full items-center">
+          <img
+            src={funacLogo}
+            alt="FUNAC"
+            className="h-full w-auto object-contain"
+          />
         </Link>
 
         {/* Desktop nav */}
@@ -92,7 +86,7 @@ const Navbar = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-border glass md:hidden"
+            className="overflow-hidden border-t border-border bg-white/70 backdrop-blur-[20px] backdrop-saturate-[180%] md:hidden"
           >
             <div className="flex flex-col gap-1 px-6 py-4">
               {links.map((link) => (

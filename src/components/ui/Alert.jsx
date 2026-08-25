@@ -18,8 +18,8 @@ const typeConfig = {
   },
   info: {
     icon: Info,
-    classes: 'bg-blue-50 border-blue-200 text-blue-800',
-    iconClass: 'text-blue-500',
+    classes: 'bg-primary/5 border-primary/20 text-primary',
+    iconClass: 'text-primary',
   },
 }
 
