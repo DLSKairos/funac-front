@@ -34,11 +34,15 @@ function PasswordTab() {
       await adminService.changePassword({
         password_actual: data.password_actual,
         password_nueva: data.password_nueva,
+        password_nueva_confirmacion: data.password_confirmacion,
       })
       toast.success('Contrasena actualizada correctamente')
       reset()
     } catch (err) {
-      const msg = err?.response?.data?.message || 'Error al cambiar la contrasena'
+      const msg =
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        'Error al cambiar la contrasena'
       toast.error(msg)
     }
   }
