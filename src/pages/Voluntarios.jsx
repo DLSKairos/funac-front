@@ -12,6 +12,13 @@ import {
   CreditCard,
   Phone,
   Mail,
+  MapPin,
+  Home,
+  Briefcase,
+  GraduationCap,
+  Clock,
+  MessageSquare,
+  Sparkles,
   Check,
 } from 'lucide-react'
 import volunteerService from '../services/volunteerService'
@@ -23,6 +30,13 @@ const schema = yup.object({
   cedula: yup.string().required('La cédula es requerida'),
   email: yup.string().required('El email es requerido').email('Email inválido'),
   telefono: yup.string().required('El teléfono es requerido'),
+  ciudad: yup.string().required('La ciudad es requerida').min(2, 'Mínimo 2 caracteres'),
+  direccion: yup.string().optional(),
+  nivel_estudios: yup.string().optional(),
+  profesion_ocupacion: yup.string().optional(),
+  disponibilidad_horaria: yup.string().optional(),
+  motivacion: yup.string().optional(),
+  habilidades_especiales: yup.string().optional(),
 })
 
 const fields = [
@@ -30,6 +44,38 @@ const fields = [
   { name: 'cedula', label: 'Cédula', icon: CreditCard, type: 'text', placeholder: '1.000.000.000' },
   { name: 'email', label: 'Correo electrónico', icon: Mail, type: 'email', placeholder: 'correo@ejemplo.com' },
   { name: 'telefono', label: 'Contacto', icon: Phone, type: 'tel', placeholder: '+57 300 000 0000' },
+  { name: 'ciudad', label: 'Ciudad', icon: MapPin, type: 'text', placeholder: 'Bogotá' },
+  { name: 'direccion', label: 'Dirección', icon: Home, type: 'text', placeholder: 'Calle 5 # 10-32' },
+  { name: 'profesion_ocupacion', label: 'Profesión u ocupación', icon: Briefcase, type: 'text', placeholder: 'Desarrollador de software' },
+]
+
+const NIVEL_ESTUDIOS_OPTIONS = [
+  { value: '', label: 'Seleccione...' },
+  { value: 'primaria', label: 'Primaria' },
+  { value: 'secundaria', label: 'Secundaria' },
+  { value: 'tecnico', label: 'Técnico' },
+  { value: 'tecnologo', label: 'Tecnólogo' },
+  { value: 'profesional', label: 'Profesional' },
+  { value: 'posgrado', label: 'Posgrado' },
+]
+
+const DISPONIBILIDAD_OPTIONS = [
+  { value: '', label: 'Seleccione...' },
+  { value: 'entre_semana', label: 'Entre semana' },
+  { value: 'fines_semana', label: 'Fines de semana' },
+  { value: 'tiempo_completo', label: 'Tiempo completo' },
+  { value: 'flexible', label: 'Flexible' },
+]
+
+const AREAS_INTERES_OPTIONS = [
+  { value: 'construccion', label: 'Construcción' },
+  { value: 'educacion', label: 'Educación' },
+  { value: 'salud', label: 'Salud' },
+  { value: 'recaudacion', label: 'Recaudación' },
+  { value: 'capacitacion', label: 'Capacitación' },
+  { value: 'comunicaciones', label: 'Comunicaciones' },
+  { value: 'juridico', label: 'Jurídico' },
+  { value: 'administrativo', label: 'Administrativo' },
 ]
 
 export default function Voluntarios() {
@@ -37,6 +83,13 @@ export default function Voluntarios() {
   const [file, setFile] = useState(null)
   const [dragOver, setDragOver] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [areasInteres, setAreasInteres] = useState([])
+
+  const toggleArea = (value) => {
+    setAreasInteres((prev) =>
+      prev.includes(value) ? prev.filter((a) => a !== value) : [...prev, value]
+    )
+  }
 
   const {
     register,
@@ -74,9 +127,9 @@ export default function Voluntarios() {
     try {
       const result = await volunteerService.register({
         ...data,
-        areas_interes: [],
+        areas_interes: areasInteres,
       })
-      const volunteerId = result?.id || result?.voluntario?.id
+      const volunteerId = result?.data?.id
       if (file && volunteerId) {
         try {
           await volunteerService.uploadCV(volunteerId, file)
@@ -84,20 +137,25 @@ export default function Voluntarios() {
           // El registro principal sí fue exitoso, pero la hoja de vida no se pudo subir.
           // Se lo informamos honestamente al usuario en vez de mostrar éxito total.
           const cvMsg =
+            cvErr?.response?.data?.error ||
             cvErr?.response?.data?.message ||
             'Tu postulación se guardó, pero no pudimos subir tu hoja de vida. Intenta subirla de nuevo o escríbenos.'
           toast.error(cvMsg, { duration: 6000 })
           reset()
           setFile(null)
+          setAreasInteres([])
           return
         }
       }
       setSuccess(true)
       reset()
       setFile(null)
+      setAreasInteres([])
     } catch (err) {
       const msg =
-        err?.response?.data?.message || 'Error al registrar la postulación. Intente nuevamente.'
+        err?.response?.data?.error ||
+        err?.response?.data?.message ||
+        'Error al registrar la postulación. Intente nuevamente.'
       toast.error(msg)
     }
   }
@@ -196,6 +254,106 @@ export default function Voluntarios() {
                 )}
               </div>
             ))}
+
+            {/* Nivel de estudios / Disponibilidad */}
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-foreground">
+                  Nivel de estudios
+                </label>
+                <div className="relative">
+                  <GraduationCap
+                    size={18}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                  />
+                  <select
+                    {...register('nivel_estudios')}
+                    className="w-full appearance-none rounded-xl border-2 border-border bg-card pl-12 pr-4 py-3.5 text-sm text-foreground focus:border-secondary focus:outline-none focus:ring-4 focus:ring-secondary/15 transition-all"
+                  >
+                    {NIVEL_ESTUDIOS_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-medium text-foreground">
+                  Disponibilidad
+                </label>
+                <div className="relative">
+                  <Clock
+                    size={18}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                  />
+                  <select
+                    {...register('disponibilidad_horaria')}
+                    className="w-full appearance-none rounded-xl border-2 border-border bg-card pl-12 pr-4 py-3.5 text-sm text-foreground focus:border-secondary focus:outline-none focus:ring-4 focus:ring-secondary/15 transition-all"
+                  >
+                    {DISPONIBILIDAD_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Motivación */}
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">
+                Motivación
+              </label>
+              <div className="relative">
+                <MessageSquare size={18} className="absolute left-4 top-4 text-muted-foreground pointer-events-none" />
+                <textarea
+                  {...register('motivacion')}
+                  rows={3}
+                  placeholder="Cuéntenos por qué quiere ser voluntario..."
+                  className="w-full rounded-xl border-2 border-border bg-card pl-12 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-secondary focus:outline-none focus:ring-4 focus:ring-secondary/15 transition-all resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Habilidades especiales */}
+            <div>
+              <label className="mb-2 block text-sm font-medium text-foreground">
+                Habilidades especiales
+              </label>
+              <div className="relative">
+                <Sparkles size={18} className="absolute left-4 top-4 text-muted-foreground pointer-events-none" />
+                <textarea
+                  {...register('habilidades_especiales')}
+                  rows={2}
+                  placeholder="Ej: buen manejo de niños, primeros auxilios..."
+                  className="w-full rounded-xl border-2 border-border bg-card pl-12 pr-4 py-3.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-secondary focus:outline-none focus:ring-4 focus:ring-secondary/15 transition-all resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Areas de interés */}
+            <div>
+              <label className="mb-3 block text-sm font-medium text-foreground">
+                Áreas de interés
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {AREAS_INTERES_OPTIONS.map((area) => {
+                  const selected = areasInteres.includes(area.value)
+                  return (
+                    <button
+                      key={area.value}
+                      type="button"
+                      onClick={() => toggleArea(area.value)}
+                      className={`rounded-full border-2 px-4 py-2 text-xs font-medium transition-all ${
+                        selected
+                          ? 'border-secondary bg-secondary text-white'
+                          : 'border-border bg-card text-muted-foreground hover:border-secondary/60'
+                      }`}
+                    >
+                      {area.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
 
             {/* Dropzone */}
             <div>
