@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { Phone, Mail, MapPin, Instagram, Facebook, Twitter, Music2, Send } from 'lucide-react'
 import PageHero from '../components/PageHero'
 import contactService from '../services/contactService'
+import { useSectionImages } from '../hooks/useSectionImages'
 import contactHero from '@/assets/contact-hero.jpg'
 
 const schema = yup.object({
@@ -20,6 +21,7 @@ const schema = yup.object({
 })
 
 export default function Contacto() {
+  const sectionImages = useSectionImages()
   const {
     register,
     handleSubmit,
@@ -43,7 +45,7 @@ export default function Contacto() {
   return (
     <>
       <PageHero
-        image={contactHero}
+        image={sectionImages.get('contacto', 'hero') || contactHero}
         eyebrow="Hablemos"
         title={
           <>

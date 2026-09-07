@@ -15,6 +15,7 @@ import {
   Check,
 } from 'lucide-react'
 import volunteerService from '../services/volunteerService'
+import { useSectionImages } from '../hooks/useSectionImages'
 import volunteersHero from '@/assets/volunteers-hero.jpg'
 
 const schema = yup.object({
@@ -32,6 +33,7 @@ const fields = [
 ]
 
 export default function Voluntarios() {
+  const sectionImages = useSectionImages()
   const [file, setFile] = useState(null)
   const [dragOver, setDragOver] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -131,7 +133,7 @@ export default function Voluntarios() {
         <div className="grid grid-cols-1 lg:grid-cols-5 min-h-[70vh]">
           <div className="lg:col-span-3 relative overflow-hidden">
             <img
-              src={volunteersHero}
+              src={sectionImages.get('voluntarios', 'hero') || volunteersHero}
               alt="Voluntarios FUNAC"
               className="absolute inset-0 h-full w-full object-cover"
             />

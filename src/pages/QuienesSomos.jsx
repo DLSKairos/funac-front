@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ShieldCheck, HeartHandshake, Target, Quote, Users, CheckCircle } from 'lucide-react'
 import PageHero from '../components/PageHero'
 import adminService from '../services/adminService'
+import { useSectionImages } from '../hooks/useSectionImages'
 import aboutHero from '@/assets/about-hero.jpg'
 import testimonial1 from '@/assets/testimonial-1.jpg'
 import testimonial2 from '@/assets/testimonial-2.jpg'
@@ -55,6 +56,7 @@ const staticValues = [
 
 export default function QuienesSomos() {
   const [page, setPage] = useState(null)
+  const sectionImages = useSectionImages()
 
   useEffect(() => {
     adminService.getPageContent('quienes-somos').then(setPage).catch(() => {})
@@ -70,7 +72,7 @@ export default function QuienesSomos() {
   return (
     <>
       <PageHero
-        image={aboutHero}
+        image={sectionImages.get('quienes_somos', 'hero') || aboutHero}
         eyebrow="Quiénes somos"
         title={
           <>
@@ -267,7 +269,7 @@ export default function QuienesSomos() {
                 </p>
                 <div className="mt-6 flex items-center gap-3 border-t border-white/10 pt-5">
                   <img
-                    src={t.image}
+                    src={sectionImages.get('quienes_somos', `testimonio_${i + 1}`) || t.image}
                     alt={t.name}
                     className="h-12 w-12 rounded-full object-cover ring-2 ring-funac-yellow/40"
                   />

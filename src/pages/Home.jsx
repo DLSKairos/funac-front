@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom'
 import ImageCarousel from '../components/home/ImageCarousel'
 import NewsModal from '../components/NewsModal'
 import homeService from '../services/homeService'
+import { useSectionImages } from '../hooks/useSectionImages'
 import homeHero from '@/assets/home-hero.jpg'
 
 const fallbackLicitaciones = [
@@ -24,6 +25,7 @@ const fallbackLicitaciones = [
 
 export default function Home() {
   const [pdfs, setPdfs] = useState([])
+  const sectionImages = useSectionImages()
 
   useEffect(() => {
     homeService
@@ -53,7 +55,7 @@ export default function Home() {
       {/* HERO with image background */}
       <section className="relative overflow-hidden min-h-[92vh] flex items-center">
         <div className="absolute inset-0">
-          <img src={homeHero} alt="Niño beneficiario" className="h-full w-full object-cover" />
+          <img src={sectionImages.get('inicio', 'hero') || homeHero} alt="Niño beneficiario" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
         </div>

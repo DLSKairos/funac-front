@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import donationService from '../services/donationService'
 import { formatCurrency } from '../utils/formatters'
+import { useSectionImages } from '../hooks/useSectionImages'
 import donationsHero from '@/assets/donations-hero.jpg'
 
 const AMOUNTS = [50000, 100000, 200000, 500000]
@@ -27,6 +28,7 @@ const schema = yup.object({
 })
 
 export default function Donaciones() {
+  const sectionImages = useSectionImages()
   const [selected, setSelected] = useState(100000)
   const [custom, setCustom] = useState('')
   const [useCustom, setUseCustom] = useState(false)
@@ -150,7 +152,7 @@ export default function Donaciones() {
 
           <div className="relative overflow-hidden min-h-[40vh]">
             <img
-              src={donationsHero}
+              src={sectionImages.get('donaciones', 'hero') || donationsHero}
               alt="Semilla en manos"
               className="absolute inset-0 h-full w-full object-cover"
             />

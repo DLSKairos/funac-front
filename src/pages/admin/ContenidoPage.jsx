@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import { Trash2, Upload, Plus, Save, Facebook, Instagram, Twitter, Youtube, Linkedin, MessageCircle } from 'lucide-react'
 import adminService from '../../services/adminService'
+import newsModalService from '../../services/newsModalService'
 import Button from '../../components/ui/Button'
 import Input from '../../components/ui/Input'
 import Textarea from '../../components/ui/Textarea'
@@ -9,7 +10,7 @@ import Spinner from '../../components/ui/Spinner'
 import IconPicker from '../../components/ui/IconPicker'
 import { formatFileSize } from '../../utils/formatters'
 
-const TABS = ['Paginas', 'Carrusel', 'PDFs', 'Redes Sociales', 'WhatsApp']
+const TABS = ['Paginas', 'Carrusel', 'Imagenes', 'PDFs', 'Redes Sociales', 'WhatsApp', 'Modal de Noticias']
 
 // ─── Páginas Tab ─────────────────────────────────────────────────────────────
 const PAGES_CONFIG = [
@@ -425,6 +426,136 @@ function CarouselTab() {
   )
 }
 
+// ─── Section Images Tab ─────────────────────────────────────────────────────
+const PAGE_LABELS = {
+  inicio: 'Inicio',
+  quienes_somos: 'Quienes Somos',
+  contacto: 'Contactenos',
+  voluntarios: 'Voluntarios',
+  donaciones: 'Donaciones',
+}
+
+function SectionImageCard({ slot, onUpdated }) {
+  const [uploading, setUploading] = useState(false)
+  const inputRef = useRef()
+
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setUploading(true)
+    const formData = new FormData()
+    formData.append('imagen', file)
+    try {
+      await adminService.uploadSectionImage(slot.pagina, slot.clave, formData)
+      toast.success('Imagen actualizada correctamente')
+      onUpdated()
+    } catch {
+      toast.error('Error al subir la imagen')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleReset = async () => {
+    if (!confirm('Restablecer a la imagen por defecto?')) return
+    try {
+      await adminService.resetSectionImage(slot.pagina, slot.clave)
+      toast.success('Imagen restablecida')
+      onUpdated()
+    } catch {
+      toast.error('Error al restablecer la imagen')
+    }
+  }
+
+  return (
+    <div className="rounded-xl border border-gray-100 overflow-hidden">
+      <div className="relative aspect-video bg-gray-50">
+        {slot.url_imagen ? (
+          <img src={slot.url_imagen} alt={slot.etiqueta} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 px-4 text-center">
+            Usando imagen por defecto
+          </div>
+        )}
+      </div>
+      <div className="p-3">
+        <p className="text-sm font-medium text-gray-800 truncate">{slot.etiqueta}</p>
+        <div className="flex gap-2 mt-2">
+          <button
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-funac-navy text-white rounded-lg text-xs font-medium hover:brightness-90 transition-colors disabled:opacity-50"
+          >
+            <Upload size={12} />
+            {uploading ? 'Subiendo...' : 'Reemplazar'}
+          </button>
+          {slot.url_imagen && (
+            <button
+              onClick={handleReset}
+              className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-200 text-gray-600 rounded-lg text-xs font-medium hover:border-red-300 hover:text-red-500 transition-colors"
+              title="Restablecer"
+            >
+              <Trash2 size={12} />
+            </button>
+          )}
+        </div>
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileSelect}
+        />
+      </div>
+    </div>
+  )
+}
+
+function SectionImagesTab() {
+  const [slots, setSlots] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  const load = () => {
+    adminService.getSectionImages()
+      .then((d) => setSlots(Array.isArray(d) ? d : []))
+      .catch(() => toast.error('Error al cargar imagenes'))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { load() }, [])
+
+  if (loading) {
+    return <div className="flex justify-center py-12"><Spinner /></div>
+  }
+
+  const paginas = [...new Set(slots.map((s) => s.pagina))]
+
+  return (
+    <div>
+      <h2 className="text-lg font-bold text-gray-900 mb-1">Imagenes de secciones</h2>
+      <p className="text-sm text-gray-500 mb-6">
+        Reemplaza la portada y las fotos de cada seccion publica. Si no subes una imagen, se usa la imagen por defecto del sitio.
+      </p>
+
+      <div className="space-y-8">
+        {paginas.map((pagina) => (
+          <div key={pagina}>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">{PAGE_LABELS[pagina] || pagina}</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {slots
+                .filter((s) => s.pagina === pagina)
+                .map((slot) => (
+                  <SectionImageCard key={slot.id} slot={slot} onUpdated={load} />
+                ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── PDFs Tab ─────────────────────────────────────────────────────────────────
 function PDFsTab() {
   const [pdfs, setPdfs] = useState([])
@@ -687,11 +818,225 @@ function WhatsAppTab() {
   )
 }
 
+// ─── Modal de Noticias Tab ──────────────────────────────────────────────────
+function ModalNoticiaTab() {
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [uploadingImage, setUploadingImage] = useState(false)
+  const imageInputRef = useRef()
+  const [form, setForm] = useState({
+    activo: false,
+    titulo: '',
+    subtitulo: '',
+    badge_texto: '',
+    highlight_texto: '',
+    url_destino: '',
+    etiqueta_boton: '',
+    imagen_url: '',
+  })
+
+  useEffect(() => {
+    newsModalService
+      .getAdminConfig()
+      .then((data) => {
+        const config = data?.data ?? data
+        if (config) {
+          setForm({
+            activo: config.activo ?? false,
+            titulo: config.titulo || '',
+            subtitulo: config.subtitulo || '',
+            badge_texto: config.badge_texto || '',
+            highlight_texto: config.highlight_texto || '',
+            url_destino: config.url_destino || '',
+            etiqueta_boton: config.etiqueta_boton || '',
+            imagen_url: config.imagen_url || '',
+          })
+        }
+      })
+      .catch(() => toast.error('Error al cargar la configuración del modal'))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const handleImageSelect = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setUploadingImage(true)
+    const formData = new FormData()
+    formData.append('imagen', file)
+    try {
+      const res = await newsModalService.uploadImage(formData)
+      const updated = res?.data ?? res
+      setForm((prev) => ({ ...prev, imagen_url: updated?.imagen_url || '' }))
+      toast.success('Imagen actualizada correctamente')
+    } catch (err) {
+      const msg = err?.response?.data?.error || 'Error al subir la imagen'
+      toast.error(msg)
+    } finally {
+      setUploadingImage(false)
+    }
+  }
+
+  const handleImageDelete = async () => {
+    if (!confirm('Quitar la imagen del modal?')) return
+    try {
+      await newsModalService.deleteImage()
+      setForm((prev) => ({ ...prev, imagen_url: '' }))
+      toast.success('Imagen eliminada')
+    } catch {
+      toast.error('Error al eliminar la imagen')
+    }
+  }
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await newsModalService.updateConfig(form)
+      toast.success('Configuración del modal actualizada correctamente')
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'Error al guardar los cambios'
+      toast.error(msg)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-12">
+        <Spinner />
+      </div>
+    )
+  }
+
+  return (
+    <div className="max-w-lg space-y-5">
+      <h2 className="text-lg font-bold text-gray-900 mb-2">Configuración del Modal de Noticias</h2>
+      <p className="text-sm text-gray-500 mb-6">
+        El modal aparece una vez por sesión del navegador. Si está desactivado, no se mostrará a ningún visitante.
+      </p>
+
+      {/* Toggle activo */}
+      <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 rounded-xl border border-gray-200">
+        <input
+          type="checkbox"
+          name="activo"
+          checked={form.activo}
+          onChange={handleChange}
+          className="w-4 h-4 accent-funac-navy"
+        />
+        <div>
+          <p className="text-sm font-medium text-gray-900">Modal activo</p>
+          <p className="text-xs text-gray-500">
+            {form.activo ? 'El modal se mostrará a los visitantes' : 'El modal está desactivado'}
+          </p>
+        </div>
+      </label>
+
+      {/* Imagen del modal */}
+      <div>
+        <p className="text-sm font-medium text-gray-700 mb-2">Imagen del modal (opcional)</p>
+        <div className="rounded-xl border border-gray-200 overflow-hidden">
+          <div className="relative h-32 bg-gray-50">
+            {form.imagen_url ? (
+              <img src={form.imagen_url} alt="Imagen del modal" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+                Sin imagen (se muestra el fondo decorativo por defecto)
+              </div>
+            )}
+          </div>
+          <div className="p-3 flex gap-2">
+            <button
+              type="button"
+              onClick={() => imageInputRef.current?.click()}
+              disabled={uploadingImage}
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 bg-funac-navy text-white rounded-lg text-xs font-medium hover:brightness-90 transition-colors disabled:opacity-50"
+            >
+              <Upload size={12} />
+              {uploadingImage ? 'Subiendo...' : 'Subir imagen'}
+            </button>
+            {form.imagen_url && (
+              <button
+                type="button"
+                onClick={handleImageDelete}
+                className="flex items-center justify-center gap-1.5 px-3 py-1.5 border border-gray-200 text-gray-600 rounded-lg text-xs font-medium hover:border-red-300 hover:text-red-500 transition-colors"
+                title="Quitar imagen"
+              >
+                <Trash2 size={12} />
+              </button>
+            )}
+          </div>
+          <input
+            ref={imageInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageSelect}
+          />
+        </div>
+      </div>
+
+      <Input
+        label="Título del modal"
+        name="titulo"
+        value={form.titulo}
+        onChange={handleChange}
+        placeholder="Nueva campaña de ayuda"
+      />
+      <Input
+        label="Subtítulo / descripción"
+        name="subtitulo"
+        value={form.subtitulo}
+        onChange={handleChange}
+        placeholder="Descripción breve de la novedad..."
+      />
+      <Input
+        label="Texto del badge (etiqueta superior)"
+        name="badge_texto"
+        value={form.badge_texto}
+        onChange={handleChange}
+        placeholder="Noticia destacada"
+      />
+      <Input
+        label="Texto destacado (resaltado con ícono)"
+        name="highlight_texto"
+        value={form.highlight_texto}
+        onChange={handleChange}
+        placeholder="Hasta el 30 de junio: cada donación será duplicada"
+      />
+      <Input
+        label="URL de destino del botón"
+        name="url_destino"
+        value={form.url_destino}
+        onChange={handleChange}
+        placeholder="/donaciones o https://..."
+      />
+      <Input
+        label="Texto del botón de acción"
+        name="etiqueta_boton"
+        value={form.etiqueta_boton}
+        onChange={handleChange}
+        placeholder="Quiero ayudar"
+      />
+
+      <Button onClick={handleSave} loading={saving}>
+        Guardar cambios
+      </Button>
+    </div>
+  )
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 export default function ContenidoPage() {
   const [activeTab, setActiveTab] = useState(0)
 
-  const tabComponents = [PaginasTab, CarouselTab, PDFsTab, SocialTab, WhatsAppTab]
+  const tabComponents = [PaginasTab, CarouselTab, SectionImagesTab, PDFsTab, SocialTab, WhatsAppTab, ModalNoticiaTab]
   const ActiveComponent = tabComponents[activeTab]
 
   return (

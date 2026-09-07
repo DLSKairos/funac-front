@@ -59,6 +59,24 @@ const adminService = {
     return response.data
   },
 
+  // Section images
+  async getSectionImages() {
+    const response = await api.get('/admin/secciones-imagenes')
+    return response.data?.data || []
+  },
+
+  async uploadSectionImage(pagina, clave, formData) {
+    const response = await api.put(`/admin/secciones-imagenes/${pagina}/${clave}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+    return response.data
+  },
+
+  async resetSectionImage(pagina, clave) {
+    const response = await api.delete(`/admin/secciones-imagenes/${pagina}/${clave}`)
+    return response.data
+  },
+
   // Settings
   async getSocialMedia() {
     const response = await api.get('/settings/social')

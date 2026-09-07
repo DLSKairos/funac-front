@@ -77,12 +77,22 @@ const NewsModal = () => {
           >
             {/* Decorative header */}
             <div className="relative h-40 bg-gradient-primary overflow-hidden">
+              {config.imagen_url && (
+                <>
+                  <img
+                    src={config.imagen_url}
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" />
+                </>
+              )}
               <div className="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-secondary/40 blur-2xl animate-blob-float" />
               <div
                 className="absolute -bottom-12 -right-8 h-44 w-44 rounded-full bg-accent/40 blur-2xl animate-blob-float"
                 style={{ animationDelay: '3s' }}
               />
-              <div className="absolute inset-0 bg-dots opacity-20" />
+              {!config.imagen_url && <div className="absolute inset-0 bg-dots opacity-20" />}
 
               <button
                 onClick={close}

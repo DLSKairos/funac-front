@@ -5,7 +5,6 @@ import * as yup from 'yup'
 import toast from 'react-hot-toast'
 import { Lock, ChevronLeft, ChevronRight, User, Calendar } from 'lucide-react'
 import adminService from '../../services/adminService'
-import newsModalService from '../../services/newsModalService'
 import Input from '../../components/ui/Input'
 import Button from '../../components/ui/Button'
 import Spinner from '../../components/ui/Spinner'
@@ -20,7 +19,7 @@ const passwordSchema = yup.object({
     .oneOf([yup.ref('password_nueva')], 'Las contrasenas no coinciden'),
 })
 
-const TABS = ['Cambiar Contrasena', 'Logs de Actividad', 'Modal de Noticias']
+const TABS = ['Cambiar Contrasena', 'Logs de Actividad']
 
 function PasswordTab() {
   const {
@@ -159,143 +158,9 @@ function LogsTab() {
   )
 }
 
-function ModalNoticiaTab() {
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [form, setForm] = useState({
-    activo: false,
-    titulo: '',
-    subtitulo: '',
-    badge_texto: '',
-    highlight_texto: '',
-    url_destino: '',
-    etiqueta_boton: '',
-  })
-
-  useEffect(() => {
-    newsModalService
-      .getAdminConfig()
-      .then((data) => {
-        const config = data?.data ?? data
-        if (config) {
-          setForm({
-            activo: config.activo ?? false,
-            titulo: config.titulo || '',
-            subtitulo: config.subtitulo || '',
-            badge_texto: config.badge_texto || '',
-            highlight_texto: config.highlight_texto || '',
-            url_destino: config.url_destino || '',
-            etiqueta_boton: config.etiqueta_boton || '',
-          })
-        }
-      })
-      .catch(() => toast.error('Error al cargar la configuración del modal'))
-      .finally(() => setLoading(false))
-  }, [])
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
-  }
-
-  const handleSave = async () => {
-    setSaving(true)
-    try {
-      await newsModalService.updateConfig(form)
-      toast.success('Configuración del modal actualizada correctamente')
-    } catch (err) {
-      const msg = err?.response?.data?.message || 'Error al guardar los cambios'
-      toast.error(msg)
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="flex justify-center py-12">
-        <Spinner />
-      </div>
-    )
-  }
-
-  return (
-    <div className="max-w-lg space-y-5">
-      <h2 className="text-lg font-bold text-gray-900 mb-2">Configuración del Modal de Noticias</h2>
-      <p className="text-sm text-gray-500 mb-6">
-        El modal aparece una vez por sesión del navegador. Si está desactivado, no se mostrará a ningún visitante.
-      </p>
-
-      {/* Toggle activo */}
-      <label className="flex items-center gap-3 cursor-pointer p-3 bg-gray-50 rounded-xl border border-gray-200">
-        <input
-          type="checkbox"
-          name="activo"
-          checked={form.activo}
-          onChange={handleChange}
-          className="w-4 h-4 accent-funac-navy"
-        />
-        <div>
-          <p className="text-sm font-medium text-gray-900">Modal activo</p>
-          <p className="text-xs text-gray-500">
-            {form.activo ? 'El modal se mostrará a los visitantes' : 'El modal está desactivado'}
-          </p>
-        </div>
-      </label>
-
-      <Input
-        label="Título del modal"
-        name="titulo"
-        value={form.titulo}
-        onChange={handleChange}
-        placeholder="Nueva campaña de ayuda"
-      />
-      <Input
-        label="Subtítulo / descripción"
-        name="subtitulo"
-        value={form.subtitulo}
-        onChange={handleChange}
-        placeholder="Descripción breve de la novedad..."
-      />
-      <Input
-        label="Texto del badge (etiqueta superior)"
-        name="badge_texto"
-        value={form.badge_texto}
-        onChange={handleChange}
-        placeholder="Noticia destacada"
-      />
-      <Input
-        label="Texto destacado (resaltado con ícono)"
-        name="highlight_texto"
-        value={form.highlight_texto}
-        onChange={handleChange}
-        placeholder="Hasta el 30 de junio: cada donación será duplicada"
-      />
-      <Input
-        label="URL de destino del botón"
-        name="url_destino"
-        value={form.url_destino}
-        onChange={handleChange}
-        placeholder="/donaciones o https://..."
-      />
-      <Input
-        label="Texto del botón de acción"
-        name="etiqueta_boton"
-        value={form.etiqueta_boton}
-        onChange={handleChange}
-        placeholder="Quiero ayudar"
-      />
-
-      <Button onClick={handleSave} loading={saving}>
-        Guardar cambios
-      </Button>
-    </div>
-  )
-}
-
 export default function ConfiguracionPage() {
   const [activeTab, setActiveTab] = useState(0)
-  const tabComponents = [PasswordTab, LogsTab, ModalNoticiaTab]
+  const tabComponents = [PasswordTab, LogsTab]
   const ActiveComponent = tabComponents[activeTab]
 
   return (
