@@ -37,6 +37,7 @@ export default function VoluntariosPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [deletingId, setDeletingId] = useState(null)
   const [updatingId, setUpdatingId] = useState(null)
+  const [downloadingCv, setDownloadingCv] = useState(false)
 
   const [search, setSearch] = useState('')
   const [estado, setEstado] = useState('')
@@ -80,6 +81,23 @@ export default function VoluntariosPage() {
       toast.error('Error al actualizar estado')
     } finally {
       setUpdatingId(null)
+    }
+  }
+
+  const downloadCV = async (id, nombreArchivo) => {
+    setDownloadingCv(true)
+    try {
+      const blob = await adminService.downloadVolunteerCV(id)
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = nombreArchivo || 'cv.pdf'
+      a.click()
+      window.URL.revokeObjectURL(url)
+    } catch {
+      toast.error('Error al descargar el CV')
+    } finally {
+      setDownloadingCv(false)
     }
   }
 
@@ -264,10 +282,21 @@ export default function VoluntariosPage() {
                   {{ en_revision: 'En revision', aprobado: 'Aprobado', rechazado: 'Rechazado', inactivo: 'Inactivo' }[est]}
                 </Button>
               ))}
-              {selected.cv_url && (
-                <a href={selected.cv_url} target="_blank" rel="noopener noreferrer">
+              {selected.url_cv && (
+                <a href={selected.url_cv} target="_blank" rel="noopener noreferrer">
                   <Button size="sm" variant="outline" icon={FileText}>Ver CV</Button>
                 </a>
+              )}
+              {selected.url_cv && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  icon={Download}
+                  loading={downloadingCv}
+                  onClick={() => downloadCV(selected.id, selected.nombre_archivo_cv)}
+                >
+                  Descargar CV
+                </Button>
               )}
               <Button
                 size="sm"

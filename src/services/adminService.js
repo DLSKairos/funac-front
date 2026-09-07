@@ -122,6 +122,13 @@ const adminService = {
     return response.data
   },
 
+  async downloadVolunteerCV(id) {
+    const response = await api.get(`/admin/volunteers/${id}/cv/download`, {
+      responseType: 'blob',
+    })
+    return response.data
+  },
+
   // Donations
   async getDonations(params) {
     const response = await api.get('/admin/donations', { params })
