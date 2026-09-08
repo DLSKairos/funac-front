@@ -20,13 +20,6 @@ import homeHero from '@/assets/home-hero.jpg'
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
 
-const fallbackLicitaciones = [
-  { title: 'Licitación Pública No. 001-2026', desc: 'Suministro de materiales educativos', date: 'Marzo 2026' },
-  { title: 'Licitación Pública No. 002-2026', desc: 'Construcción centro comunitario fase II', date: 'Febrero 2026' },
-  { title: 'Licitación Pública No. 003-2026', desc: 'Dotación equipos médicos zona rural', date: 'Enero 2026' },
-  { title: 'Licitación Pública No. 004-2025', desc: 'Transporte programa alimentario regional', date: 'Diciembre 2025' },
-]
-
 export default function Home() {
   const [pdfs, setPdfs] = useState([])
   const [preview, setPreview] = useState(null)
@@ -43,15 +36,12 @@ export default function Home() {
       .catch(() => {})
   }, [])
 
-  const licitaciones =
-    pdfs.length > 0
-      ? pdfs.map((p) => ({
-          id: p.id,
-          title: p.titulo || p.nombre_archivo || 'Documento',
-          desc: p.descripcion || '',
-          date: p.subido_en || '',
-        }))
-      : fallbackLicitaciones
+  const licitaciones = pdfs.map((p) => ({
+    id: p.id,
+    title: p.titulo || p.nombre_archivo || 'Documento',
+    desc: p.descripcion || '',
+    date: p.subido_en || '',
+  }))
 
   return (
     <>
@@ -238,6 +228,11 @@ export default function Home() {
           <p className="mt-3 max-w-xl text-base text-muted-foreground">
             Documentos públicos disponibles para consulta y descarga.
           </p>
+          {licitaciones.length === 0 ? (
+            <p className="mt-12 text-center text-sm text-muted-foreground">
+              No existen licitaciones o documentos disponibles por el momento.
+            </p>
+          ) : (
           <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
             {licitaciones.map((doc, i) => (
               <motion.div
@@ -286,6 +281,7 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+          )}
         </div>
       </section>
 
