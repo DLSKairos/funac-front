@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import { FileText, Download } from 'lucide-react'
+import { FileText, Download, Eye } from 'lucide-react'
 import { motion } from 'framer-motion'
 import homeService from '../../services/homeService'
-import Button from '../ui/Button'
+import Modal from '../ui/Modal'
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
 
 function PDFSkeleton() {
   return (
@@ -19,6 +21,7 @@ function PDFSkeleton() {
 export default function PDFSection() {
   const [pdfs, setPdfs] = useState([])
   const [loading, setLoading] = useState(true)
+  const [preview, setPreview] = useState(null)
 
   useEffect(() => {
     homeService.getPDFs()
@@ -56,26 +59,59 @@ export default function PDFSection() {
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
                 >
-                  <div className="inline-flex p-2.5 bg-orange-100 rounded-xl mb-4">
-                    <FileText size={22} className="text-funac-orange" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">{pdf.titulo || pdf.nombre}</h3>
-                  {pdf.descripcion && (
-                    <p className="text-sm text-gray-500 mb-4 line-clamp-2">{pdf.descripcion}</p>
-                  )}
-                  <a
-                    href={`${import.meta.env.VITE_API_URL || 'http://localhost:4000/api'}/home/pdfs/${pdf.id}/download`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-funac-orange text-white text-sm font-medium hover:bg-orange-600 transition-colors"
+                  <button
+                    type="button"
+                    onClick={() => setPreview(pdf)}
+                    className="block w-full text-left"
                   >
-                    <Download size={15} />
-                    Descargar
-                  </a>
+                    <div className="inline-flex p-2.5 bg-orange-100 rounded-xl mb-4">
+                      <FileText size={22} className="text-funac-orange" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2 hover:text-funac-orange transition-colors">
+                      {pdf.titulo || pdf.nombre}
+                    </h3>
+                    {pdf.descripcion && (
+                      <p className="text-sm text-gray-500 mb-4 line-clamp-2">{pdf.descripcion}</p>
+                    )}
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPreview(pdf)}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition-colors"
+                    >
+                      <Eye size={15} />
+                      Vista previa
+                    </button>
+                    <a
+                      href={`${API_BASE}/home/pdfs/${pdf.id}/download`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="Descargar"
+                      className="inline-flex items-center justify-center p-2.5 rounded-lg bg-funac-orange text-white hover:bg-orange-600 transition-colors"
+                    >
+                      <Download size={15} />
+                    </a>
+                  </div>
                 </motion.div>
               ))}
         </div>
       </div>
+
+      <Modal
+        isOpen={!!preview}
+        onClose={() => setPreview(null)}
+        title={preview?.titulo || preview?.nombre}
+        size="xl"
+      >
+        {preview && (
+          <iframe
+            src={`${API_BASE}/home/pdfs/${preview.id}/view`}
+            title={preview.titulo || 'Vista previa del documento'}
+            className="w-full h-[75vh]"
+          />
+        )}
+      </Modal>
     </section>
   )
 }
