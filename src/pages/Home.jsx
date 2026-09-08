@@ -10,11 +10,15 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { formatDate } from '../utils/formatters'
 import ImageCarousel from '../components/home/ImageCarousel'
 import NewsModal from '../components/NewsModal'
+import Modal from '../components/ui/Modal'
 import homeService from '../services/homeService'
 import { useSectionImages } from '../hooks/useSectionImages'
 import homeHero from '@/assets/home-hero.jpg'
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
 
 const fallbackLicitaciones = [
   { title: 'Licitación Pública No. 001-2026', desc: 'Suministro de materiales educativos', date: 'Marzo 2026' },
@@ -25,6 +29,7 @@ const fallbackLicitaciones = [
 
 export default function Home() {
   const [pdfs, setPdfs] = useState([])
+  const [preview, setPreview] = useState(null)
   const sectionImages = useSectionImages()
 
   useEffect(() => {
@@ -41,10 +46,10 @@ export default function Home() {
   const licitaciones =
     pdfs.length > 0
       ? pdfs.map((p) => ({
-          title: p.titulo || p.nombre || 'Documento',
+          id: p.id,
+          title: p.titulo || p.nombre_archivo || 'Documento',
           desc: p.descripcion || '',
-          date: p.fecha || p.createdAt || '',
-          url: p.url || p.archivo_url || null,
+          date: p.subido_en || '',
         }))
       : fallbackLicitaciones
 
@@ -236,7 +241,7 @@ export default function Home() {
           <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2">
             {licitaciones.map((doc, i) => (
               <motion.div
-                key={doc.title}
+                key={doc.id || doc.title}
                 className={`group relative flex items-start gap-4 rounded-2xl border border-border p-6 card-lift overflow-hidden ${['card-gradient-orange','card-gradient-green','card-gradient-lime'][i%3]}`}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -247,16 +252,21 @@ export default function Home() {
                 <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-secondary text-white shadow-glow-secondary">
                   <FileText size={20} />
                 </div>
-                <div className="relative flex-1">
+                <button
+                  type="button"
+                  disabled={!doc.id}
+                  onClick={() => setPreview(doc)}
+                  className="relative flex-1 text-left disabled:cursor-default"
+                >
                   <h3 className="text-sm font-semibold text-foreground">{doc.title}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">{doc.desc}</p>
                   <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground/70">
-                    {doc.date}
+                    {doc.id ? formatDate(doc.date) : doc.date}
                   </p>
-                </div>
-                {doc.url ? (
+                </button>
+                {doc.id ? (
                   <a
-                    href={doc.url}
+                    href={`${API_BASE}/home/pdfs/${doc.id}/download`}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Descargar ${doc.title}`}
@@ -278,6 +288,21 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <Modal
+        isOpen={!!preview}
+        onClose={() => setPreview(null)}
+        title={preview?.title}
+        size="xl"
+      >
+        {preview && (
+          <iframe
+            src={`${API_BASE}/home/pdfs/${preview.id}/view`}
+            title={preview.title || 'Vista previa del documento'}
+            className="w-full h-[75vh]"
+          />
+        )}
+      </Modal>
     </>
   )
 }
