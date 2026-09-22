@@ -195,7 +195,6 @@ export default function Voluntarios() {
               alt="Voluntarios FUNAC"
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-secondary/40 via-transparent to-secondary/30" />
           </div>
           <div className="lg:col-span-2 relative bg-gradient-secondary flex items-center px-6 py-16 lg:px-12 overflow-hidden">
             <div className="absolute inset-0 bg-grid opacity-10" />

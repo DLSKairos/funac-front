@@ -1,18 +1,11 @@
 import { motion } from 'framer-motion'
 
-const accentMap = {
-  primary: 'from-primary/70 via-primary/40 to-background',
-  secondary: 'from-secondary/70 via-secondary/30 to-background',
-  accent: 'from-accent/70 via-accent/30 to-background',
-}
-
 const PageHero = ({ image, eyebrow, title, subtitle, accent = 'primary', children }) => {
   return (
     <section className="relative overflow-hidden">
       {/* Background image */}
       <div className="absolute inset-0">
         <img src={image} alt="" className="h-full w-full object-cover" />
-        <div className={`absolute inset-0 bg-gradient-to-b ${accentMap[accent]}`} />
         <div className="absolute inset-0 bg-grid opacity-[0.07]" />
       </div>
 

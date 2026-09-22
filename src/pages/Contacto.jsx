@@ -76,7 +76,7 @@ export default function Contacto() {
               {
                 icon: MapPin,
                 title: 'Dirección',
-                lines: ['Calle 72 #10-25, Of. 301', 'Bogotá D.C., Colombia'],
+                lines: ['Calle 100 #19-61, Centro Empresarial Cien', 'Bogotá D.C., Colombia'],
                 color: 'accent',
               },
             ].map((c, i) => (
@@ -118,7 +118,7 @@ export default function Contacto() {
               transition={{ duration: 0.7 }}
             >
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.852835925809!2d-74.0530!3d4.6486!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNMKwMzgnNTUuMCJOIDc0wrAwMycxMS4wIlc!5e0!3m2!1ses!2sco!4v1234567890"
+                src="https://www.google.com/maps?q=Calle+100+%2319-61,+Centro+Empresarial+Cien,+Bogot%C3%A1+D.C.,+Colombia&output=embed"
                 width="100%"
                 height="400"
                 style={{ border: 0 }}

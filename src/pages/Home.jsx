@@ -50,8 +50,6 @@ export default function Home() {
       <section className="relative overflow-hidden min-h-[92vh] flex items-center">
         <div className="absolute inset-0">
           <img src={sectionImages.get('inicio', 'hero') || homeHero} alt="Niño beneficiario" className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
         </div>
 
         {/* Animated blobs */}

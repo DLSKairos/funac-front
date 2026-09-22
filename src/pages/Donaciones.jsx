@@ -156,7 +156,6 @@ export default function Donaciones() {
               alt="Semilla en manos"
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-l from-transparent to-accent/20" />
           </div>
         </div>
       </section>
