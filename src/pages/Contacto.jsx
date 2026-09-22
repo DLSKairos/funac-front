@@ -1,13 +1,24 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import toast from 'react-hot-toast'
-import { Phone, Mail, MapPin, Instagram, Facebook, Twitter, Music2, Send } from 'lucide-react'
+import { Phone, Mail, MapPin, Instagram, Facebook, Twitter, Youtube, Linkedin, Music2, Send } from 'lucide-react'
 import PageHero from '../components/PageHero'
 import contactService from '../services/contactService'
+import homeService from '../services/homeService'
 import { useSectionImages } from '../hooks/useSectionImages'
 import contactHero from '@/assets/contact-hero.jpg'
+
+const SOCIAL_META = {
+  facebook: { Icon: Facebook, label: 'Facebook' },
+  instagram: { Icon: Instagram, label: 'Instagram' },
+  twitter: { Icon: Twitter, label: 'Twitter' },
+  youtube: { Icon: Youtube, label: 'YouTube' },
+  linkedin: { Icon: Linkedin, label: 'LinkedIn' },
+  tiktok: { Icon: Music2, label: 'TikTok' },
+}
 
 const schema = yup.object({
   nombre: yup.string().required('El nombre es requerido').min(3, 'Mínimo 3 caracteres'),
@@ -22,12 +33,26 @@ const schema = yup.object({
 
 export default function Contacto() {
   const sectionImages = useSectionImages()
+  const [socialLinks, setSocialLinks] = useState([])
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: yupResolver(schema) })
+
+  useEffect(() => {
+    homeService
+      .getSocialMedia()
+      .then((data) => {
+        if (!data) return
+        const links = Object.entries(data)
+          .filter(([key, cfg]) => cfg?.activo !== false && cfg?.url && SOCIAL_META[key])
+          .map(([key, cfg]) => ({ key, url: cfg.url, ...SOCIAL_META[key] }))
+        setSocialLinks(links)
+      })
+      .catch(() => {})
+  }, [])
 
   const onSubmit = async (data) => {
     try {
@@ -129,38 +154,35 @@ export default function Contacto() {
               />
             </motion.div>
 
-            <motion.div
-              className="rounded-2xl bg-foreground p-8 text-background relative overflow-hidden"
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-            >
-              <div className="blob top-0 right-0 h-48 w-48 bg-secondary/40 animate-blob-float" />
-              <div className="relative">
-                <p className="text-xs uppercase tracking-widest text-background/60">Síganos</p>
-                <h3 className="mt-2 text-2xl font-medium">Redes sociales</h3>
-                <div className="mt-6 flex flex-col gap-3">
-                  {[
-                    { Icon: Instagram, label: '@funac_fundacion', href: 'https://instagram.com' },
-                    { Icon: Music2, label: '@funac_oficial', href: 'https://tiktok.com' },
-                    { Icon: Twitter, label: '@FunacOrg', href: 'https://twitter.com' },
-                    { Icon: Facebook, label: 'Fundación FUNAC', href: 'https://facebook.com' },
-                  ].map(({ Icon, label, href }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-xl glass-dark p-3 transition-all hover:bg-funac-yellow hover:text-foreground hover:translate-x-1"
-                    >
-                      <Icon size={18} />
-                      <span className="text-sm font-medium">{label}</span>
-                    </a>
-                  ))}
+            {socialLinks.length > 0 && (
+              <motion.div
+                className="rounded-2xl bg-foreground p-8 text-background relative overflow-hidden"
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+              >
+                <div className="blob top-0 right-0 h-48 w-48 bg-secondary/40 animate-blob-float" />
+                <div className="relative">
+                  <p className="text-xs uppercase tracking-widest text-background/60">Síganos</p>
+                  <h3 className="mt-2 text-2xl font-medium">Redes sociales</h3>
+                  <div className="mt-6 flex flex-col gap-3">
+                    {socialLinks.map(({ key, url, Icon, label }) => (
+                      <a
+                        key={key}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center gap-3 rounded-xl glass-dark p-3 transition-all hover:bg-funac-yellow hover:text-foreground hover:translate-x-1"
+                      >
+                        <Icon size={18} />
+                        <span className="text-sm font-medium">{label}</span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
           </div>
 
           {/* Contact form */}
