@@ -14,7 +14,6 @@ import { QRCodeSVG } from 'qrcode.react'
 import { formatDate } from '../utils/formatters'
 import ImageCarousel from '../components/home/ImageCarousel'
 import NewsModal from '../components/NewsModal'
-import Modal from '../components/ui/Modal'
 import homeService from '../services/homeService'
 import { useSectionImages } from '../hooks/useSectionImages'
 import homeHero from '@/assets/home-hero.jpg'
@@ -23,7 +22,6 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
 
 export default function Home() {
   const [pdfs, setPdfs] = useState([])
-  const [preview, setPreview] = useState(null)
   const sectionImages = useSectionImages()
 
   useEffect(() => {
@@ -238,46 +236,55 @@ export default function Home() {
             {licitaciones.map((doc, i) => (
               <motion.div
                 key={doc.id || doc.title}
-                className={`group relative flex items-start gap-4 rounded-2xl border border-border p-6 card-lift overflow-hidden ${['card-gradient-orange','card-gradient-green','card-gradient-lime'][i%3]}`}
+                className={`group relative flex flex-col gap-4 rounded-2xl border border-border p-6 card-lift overflow-hidden ${['card-gradient-orange','card-gradient-green','card-gradient-lime'][i%3]}`}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
               >
                 <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-secondary/10 blur-2xl group-hover:bg-secondary/30 transition-colors" />
-                <div className="relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-secondary text-white shadow-glow-secondary">
-                  <FileText size={20} />
+                <div className="relative flex items-start gap-4">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-secondary text-white shadow-glow-secondary">
+                    <FileText size={20} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-foreground">{doc.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{doc.desc}</p>
+                    <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground/70">
+                      {doc.id ? formatDate(doc.date) : doc.date}
+                    </p>
+                  </div>
+                  {doc.id ? (
+                    <a
+                      href={`${API_BASE}/home/pdfs/${doc.id}/download`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Descargar ${doc.title}`}
+                      className="flex-shrink-0 rounded-xl p-3 text-muted-foreground transition-all group-hover:bg-primary group-hover:text-primary-foreground"
+                    >
+                      <Download size={18} />
+                    </a>
+                  ) : (
+                    <button
+                      disabled
+                      aria-label="Sin enlace de descarga"
+                      className="flex-shrink-0 rounded-xl p-3 text-muted-foreground/40"
+                    >
+                      <Download size={18} />
+                    </button>
+                  )}
                 </div>
-                <button
-                  type="button"
-                  disabled={!doc.id}
-                  onClick={() => setPreview(doc)}
-                  className="relative flex-1 text-left disabled:cursor-default"
-                >
-                  <h3 className="text-sm font-semibold text-foreground">{doc.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{doc.desc}</p>
-                  <p className="mt-2 text-xs uppercase tracking-wider text-muted-foreground/70">
-                    {doc.id ? formatDate(doc.date) : doc.date}
-                  </p>
-                </button>
-                {doc.id ? (
-                  <a
-                    href={`${API_BASE}/home/pdfs/${doc.id}/download`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Descargar ${doc.title}`}
-                    className="relative flex-shrink-0 rounded-xl p-3 text-muted-foreground transition-all group-hover:bg-primary group-hover:text-primary-foreground"
-                  >
-                    <Download size={18} />
-                  </a>
-                ) : (
-                  <button
-                    disabled
-                    aria-label="Sin enlace de descarga"
-                    className="relative flex-shrink-0 rounded-xl p-3 text-muted-foreground/40"
-                  >
-                    <Download size={18} />
-                  </button>
+                {doc.id && (
+                  <div className="relative flex items-center gap-3 rounded-xl bg-white/70 p-3">
+                    <QRCodeSVG
+                      value={`${API_BASE}/home/pdfs/${doc.id}/download`}
+                      size={64}
+                      level="M"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Escaneá el código QR para descargar este documento en tu celular.
+                    </p>
+                  </div>
                 )}
               </motion.div>
             ))}
@@ -285,28 +292,6 @@ export default function Home() {
           )}
         </div>
       </section>
-
-      <Modal
-        isOpen={!!preview}
-        onClose={() => setPreview(null)}
-        title={preview?.title}
-        size="xl"
-      >
-        {preview && (
-          <div className="flex flex-col items-center justify-center gap-4 py-10">
-            <div className="rounded-2xl bg-white p-4 shadow-sm">
-              <QRCodeSVG
-                value={`${API_BASE}/home/pdfs/${preview.id}/download`}
-                size={220}
-                level="M"
-              />
-            </div>
-            <p className="max-w-xs text-center text-sm text-muted-foreground">
-              Escaneá el código QR con la cámara de tu celular para descargar el documento en tu dispositivo.
-            </p>
-          </div>
-        )}
-      </Modal>
     </>
   )
 }
