@@ -275,14 +275,14 @@ export default function Home() {
                   )}
                 </div>
                 {doc.id && (
-                  <div className="relative flex items-center gap-3 rounded-xl bg-white/70 p-3">
+                  <div className="relative flex items-center gap-4 rounded-xl bg-white p-4">
                     <QRCodeSVG
                       value={`${API_BASE}/home/pdfs/${doc.id}/download`}
-                      size={64}
+                      size={128}
                       level="M"
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Escaneá el código QR para descargar este documento en tu celular.
+                    <p className="text-sm text-muted-foreground">
+                      Escaneá el código QR con la cámara de tu celular para descargar este documento.
                     </p>
                   </div>
                 )}
