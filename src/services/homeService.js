@@ -13,12 +13,12 @@ const homeService = {
 
   async getSocialMedia() {
     const response = await api.get('/settings/social')
-    return response.data
+    return response.data?.data
   },
 
   async getWhatsAppConfig() {
     const response = await api.get('/settings/whatsapp')
-    return response.data
+    return response.data?.data
   },
 }
 

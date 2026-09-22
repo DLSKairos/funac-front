@@ -80,7 +80,7 @@ const adminService = {
   // Settings
   async getSocialMedia() {
     const response = await api.get('/settings/social')
-    return response.data
+    return response.data?.data
   },
 
   async updateSocialMedia(data) {
@@ -90,7 +90,7 @@ const adminService = {
 
   async getWhatsApp() {
     const response = await api.get('/settings/whatsapp')
-    return response.data
+    return response.data?.data
   },
 
   async updateWhatsApp(data) {
