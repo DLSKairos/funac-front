@@ -10,6 +10,7 @@ import {
   ShieldCheck,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { QRCodeSVG } from 'qrcode.react'
 import { formatDate } from '../utils/formatters'
 import ImageCarousel from '../components/home/ImageCarousel'
 import NewsModal from '../components/NewsModal'
@@ -292,11 +293,18 @@ export default function Home() {
         size="xl"
       >
         {preview && (
-          <iframe
-            src={`${API_BASE}/home/pdfs/${preview.id}/view`}
-            title={preview.title || 'Vista previa del documento'}
-            className="w-full h-[75vh]"
-          />
+          <div className="flex flex-col items-center justify-center gap-4 py-10">
+            <div className="rounded-2xl bg-white p-4 shadow-sm">
+              <QRCodeSVG
+                value={`${API_BASE}/home/pdfs/${preview.id}/download`}
+                size={220}
+                level="M"
+              />
+            </div>
+            <p className="max-w-xs text-center text-sm text-muted-foreground">
+              Escaneá el código QR con la cámara de tu celular para descargar el documento en tu dispositivo.
+            </p>
+          </div>
         )}
       </Modal>
     </>
